@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coming Soon | Click Click</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #ffffff; /* Neutral White */
-            color: #333333;
-            font-family: poppins;
+            /* This makes your background cream, not white! */
+            background-color: #FFFDD0; 
+            color: #1A1A1A; /* Dark text color from your logo */
+            font-family: 'Poppins', sans-serif; /* Your new font is now working */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -15,26 +19,40 @@
             margin: 0;
             text-align: center;
         }
-        .logo {
+
+        .logo-container {
             max-width: 300px;
             margin-bottom: 20px;
+            background: transparent; /* This ensures the area around the logo is transparent */
         }
+
+        .logo {
+            width: 100%;
+            height: auto;
+            /* MAGIC TRICK: This single line removes the white background from your image! */
+            mix-blend-mode: multiply; 
+        }
+
         h1 {
-            color: #e83e8c; /* Your Pink Accent */
-            font-size: 24px;
+            color: #E91E63; /* Your brand Pink accent */
+            font-size: 2.5rem;
+            margin-bottom: 10px;
         }
+
         .line {
             width: 100px;
             height: 5px;
-            background-color: #00bcd4; /* Your Turquoise Accent */
+            background-color: #00BCD4; /* Your brand Turquoise accent */
             margin: 10px auto;
         }
     </style>
 </head>
 <body>
-    <img src="https://i.ibb.co/3mS00pS/Final-Logo-01-01-1080x1080.png" class="logo" alt="Click Click Logo">
+    <div class="logo-container">
+        <img src="Final.Logo-01-01-1080x1080.png" class="logo" alt="Click Click Logo">
+    </div>
     <div class="line"></div>
     <h1>Website Under Construction</h1>
-    <p>We are making something great for you. See you very soon!</p>
+    <p>We are busy making videos. See you very soon!</p>
 </body>
 </html>
