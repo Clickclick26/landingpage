@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Click Click</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FDF5E6;
+            --dark: #1a1a1a;
+            --mid: #555;
+            --light: #888;
+            --turquoise: #00bcd4;
+            --pink: #e83e8c;
+            --gradient: linear-gradient(to right, #00bcd4, #e83e8c);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--cream);
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 60px;
+            background: rgba(253,245,230,0.92);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            transition: padding 0.3s;
+        }
+        nav.scrolled { padding: 14px 60px; }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .nav-logo-img {
+            width: 130px; height: 38px;
+            object-fit: cover;
+            object-position: center 8%;
+            mix-blend-mode: multiply;
+        }
+        .nav-logo-accent { display: flex; flex-direction: column; gap: 4px; }
+        .nav-logo-accent span { display: block; height: 2px; width: 20px; border-radius: 2px; }
+        .nav-logo-accent span:nth-child(1) { background: var(--turquoise); }
+        .nav-logo-accent span:nth-child(2) { background: var(--pink); }
+
+        .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 400;
+            font-size: 0.88rem;
+            letter-spacing: 0.5px;
+            color: var(--mid);
+            transition: color 0.2s;
+            text-transform: uppercase;
+        }
+        .nav-links a:hover { color: var(--dark); }
+        .nav-links a.active { color: var(--dark); font-weight: 600; }
+
+        .nav-dropdown { position: relative; }
+        .nav-dropdown > a { display: flex; align-items: center; gap: 5px; }
+        .nav-dropdown > a::after {
+            content: '';
+            width: 5px; height: 5px;
+            border-right: 1.5px solid var(--mid);
+            border-bottom: 1.5px solid var(--mid);
+            transform: rotate(45deg) translateY(-2px);
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+        .nav-dropdown:hover > a::after { transform: rotate(-135deg) translateY(-2px); }
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 16px);
+            left: 50%;
+            transform: translateX(-50%) translateY(-6px);
+            background: rgba(253,245,230,0.98);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0,0,0,0.07);
+            border-radius: 8px;
+            padding: 10px 0;
+            min-width: 200px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s, transform 0.2s;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+        }
+        .nav-dropdown:hover .dropdown-menu { opacity: 1; pointer-events: all; transform: translateX(-50%) translateY(0); }
+        .dropdown-menu a { display: block; padding: 10px 22px; font-size: 0.85rem; color: var(--mid) !important; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.15s, color 0.15s; }
+        .dropdown-menu a:hover { background: rgba(0,188,212,0.06); color: var(--dark) !important; }
+
+        .nav-cta {
+            background: var(--dark);
+            color: var(--cream) !important;
+            padding: 10px 24px;
+            border-radius: 100px;
+            font-weight: 600 !important;
+            transition: opacity 0.2s !important;
+        }
+        .nav-cta:hover { opacity: 0.8; }
+
+        /* ── PAGE HERO ── */
+        #page-hero {
+            padding: 160px 60px 100px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-bg-blob {
+            position: absolute;
+            width: 500px; height: 500px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        .blob-1 { background: #00bcd4; top: -80px; right: 60px; }
+        .blob-2 { background: #e83e8c; bottom: -60px; left: -60px; }
+
+        .page-hero-inner { position: relative; z-index: 1; max-width: 820px; }
+        .page-hero-eyebrow {
+            display: flex; align-items: center; gap: 14px;
+            margin-bottom: 28px;
+            opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+        }
+        .eyebrow-line { width: 40px; height: 2px; background: var(--gradient); }
+        .eyebrow-text { font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase; color: var(--light); }
+
+        .page-hero-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(3rem, 6.5vw, 5.2rem);
+            line-height: 1.0;
+            letter-spacing: -2px;
+            margin-bottom: 28px;
+            opacity: 0; animation: fadeUp 0.9s 0.35s forwards;
+        }
+        .page-hero-title em {
+            font-style: italic;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .page-hero-sub {
+            font-size: 1.1rem; font-weight: 300; color: var(--mid);
+            line-height: 1.75; max-width: 580px;
+            opacity: 0; animation: fadeUp 0.9s 0.5s forwards;
+        }
+
+        /* ── SHARED SECTION ── */
+        section { padding: 100px 60px; }
+        .section-label { font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase; color: var(--light); margin-bottom: 12px; }
+        .section-title { font-family: 'DM Serif Display', serif; font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 1.1; letter-spacing: -1px; margin-bottom: 20px; }
+        .section-sub { font-weight: 300; color: var(--mid); font-size: 1.05rem; line-height: 1.7; max-width: 500px; }
+        .accent-bar { width: 60px; height: 3px; background: var(--gradient); margin: 24px 0; }
+
+        /* ── STORY / VALUES ── */
+        #story { background: var(--cream); }
+        .story-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: start;
+            margin-top: 64px;
+        }
+        .story-text-block { }
+        .story-text-block h3 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.55rem;
+            letter-spacing: -0.4px;
+            margin-bottom: 14px;
+        }
+        .story-text-block p {
+            font-weight: 300; color: var(--mid);
+            font-size: 0.97rem; line-height: 1.8;
+            margin-bottom: 32px;
+        }
+
+        /* Stat pills */
+        .story-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            border: 1px solid rgba(0,0,0,0.07);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .stat-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 24px 28px;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            background: #fff;
+            transition: background 0.2s;
+        }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-row:hover { background: #fdf8f0; }
+        .stat-icon {
+            width: 42px; height: 42px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .si-teal { background: rgba(0,188,212,0.1); }
+        .si-pink { background: rgba(232,62,140,0.1); }
+        .si-dark { background: rgba(26,26,26,0.06); }
+        .si-mix { background: linear-gradient(135deg, rgba(0,188,212,0.1), rgba(232,62,140,0.1)); }
+        .stat-content h4 { font-weight: 600; font-size: 0.92rem; margin-bottom: 2px; color: var(--dark); }
+        .stat-content p { font-weight: 300; font-size: 0.84rem; color: var(--mid); line-height: 1.5; }
+
+        /* InvestNI badge */
+        .invest-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 36px;
+            padding: 16px 24px;
+            border-radius: 8px;
+            border: 1.5px solid rgba(0,188,212,0.3);
+            background: rgba(0,188,212,0.04);
+        }
+        .invest-badge-icon {
+            width: 38px; height: 38px;
+            border-radius: 8px;
+            background: rgba(0,188,212,0.12);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .invest-badge-text { }
+        .invest-badge-text strong { display: block; font-size: 0.87rem; color: var(--dark); font-weight: 600; }
+        .invest-badge-text span { font-size: 0.78rem; color: var(--mid); font-weight: 300; }
+
+        /* ── TEAM ── */
+        #team { background: #f5ede0; }
+
+        .team-section-header { margin-bottom: 64px; }
+
+        /* Featured team members */
+        .team-featured {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .team-card {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s;
+            position: relative;
+        }
+        .team-card:hover { transform: translateY(-4px); }
+
+        .team-card-img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: linear-gradient(135deg, #1a1a2e, #2d3561);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .team-card-img::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 40% 40%, rgba(0,188,212,0.2) 0%, transparent 60%),
+                        radial-gradient(ellipse at 70% 80%, rgba(232,62,140,0.15) 0%, transparent 55%);
+        }
+        .team-avatar-placeholder {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.2rem;
+            position: relative;
+            z-index: 1;
+        }
+        .team-img-label {
+            position: absolute;
+            bottom: 16px; left: 20px;
+            z-index: 2;
+            font-size: 0.62rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.45);
+        }
+
+        .team-card-body { padding: 28px; }
+        .team-card-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem;
+            letter-spacing: -0.3px;
+            margin-bottom: 2px;
+        }
+        .team-card-role {
+            font-size: 0.72rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--turquoise);
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        .team-card-bio {
+            font-weight: 300;
+            font-size: 0.88rem;
+            color: var(--mid);
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+        .team-card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 0;
+        }
+        .team-tag {
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 100px;
+            border: 1px solid rgba(0,0,0,0.1);
+            color: var(--mid);
+        }
+
+        /* News highlight inside card */
+        .team-news {
+            margin-top: 18px;
+            padding: 14px 16px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, rgba(0,188,212,0.06), rgba(232,62,140,0.06));
+            border: 1px solid rgba(0,188,212,0.15);
+        }
+        .team-news-label {
+            font-size: 0.62rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--turquoise);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .team-news p {
+            font-size: 0.82rem;
+            font-weight: 400;
+            color: var(--dark);
+            line-height: 1.5;
+        }
+
+        /* Support team */
+        .team-support-label {
+            font-size: 0.72rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--light);
+            margin-bottom: 20px;
+        }
+        .team-support-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .support-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 28px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: transform 0.25s, box-shadow 0.25s;
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+        .support-card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(0,0,0,0.06); }
+        .support-avatar {
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+        .sa-teal { background: rgba(0,188,212,0.1); }
+        .sa-pink { background: rgba(232,62,140,0.1); }
+        .sa-dark { background: rgba(26,26,26,0.06); }
+        .support-info h4 { font-weight: 600; font-size: 0.95rem; margin-bottom: 2px; }
+        .support-info span { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--light); }
+
+
+        /* ── CTA ── */
+        #cta { background: var(--cream); padding: 120px 60px; text-align: center; }
+        .cta-inner { max-width: 600px; margin: 0 auto; }
+        .cta-inner .section-sub { margin: 0 auto 48px; text-align: center; max-width: 440px; }
+        .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .btn-primary { background: var(--dark); color: var(--cream); padding: 16px 36px; border-radius: 100px; font-size: 0.9rem; font-weight: 600; text-decoration: none; letter-spacing: 0.3px; transition: transform 0.2s, opacity 0.2s; }
+        .btn-primary:hover { transform: translateY(-2px); opacity: 0.85; }
+        .btn-outline { border: 1.5px solid var(--dark); color: var(--dark); padding: 16px 36px; border-radius: 100px; font-size: 0.9rem; font-weight: 600; text-decoration: none; letter-spacing: 0.3px; transition: background 0.2s, color 0.2s, transform 0.2s; }
+        .btn-outline:hover { background: var(--dark); color: var(--cream); transform: translateY(-2px); }
+
+        /* ── FOOTER ── */
+        footer { background: var(--dark); color: var(--cream); padding: 60px 60px 40px; }
+        .footer-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 48px; flex-wrap: wrap; gap: 40px; }
+        .footer-brand { font-family: 'DM Serif Display', serif; font-size: 2rem; letter-spacing: -1px; }
+        .footer-brand span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .footer-desc { font-weight: 300; color: rgba(253,245,230,0.5); font-size: 0.9rem; margin-top: 10px; max-width: 260px; line-height: 1.6; }
+        .footer-links-col h4 { font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(253,245,230,0.4); margin-bottom: 20px; }
+        .footer-links-col a { display: block; font-weight: 300; font-size: 0.95rem; color: rgba(253,245,230,0.7); text-decoration: none; margin-bottom: 10px; transition: color 0.2s; }
+        .footer-links-col a:hover { color: var(--cream); }
+        .footer-bottom { border-top: 1px solid rgba(253,245,230,0.1); padding-top: 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .footer-copy { font-weight: 300; font-size: 0.82rem; color: rgba(253,245,230,0.35); }
+        .footer-accent-bar { width: 40px; height: 2px; background: var(--gradient); }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .reveal.visible { opacity: 1; transform: none; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            nav { padding: 18px 24px; }
+            .nav-links { display: none; }
+            section, #page-hero, #cta, #backing { padding: 72px 24px; }
+            .story-grid { grid-template-columns: 1fr; gap: 48px; }
+            .team-featured { grid-template-columns: 1fr; }
+            .team-support-grid { grid-template-columns: 1fr 1fr; }
+            footer { padding: 48px 24px 32px; }
+            .footer-top { flex-direction: column; }
+        }
+        @media (max-width: 600px) {
+            .team-support-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+    <a href="home.html" class="nav-logo">
+        <img src="Final_Logo-01-01-1080x1080.png" class="nav-logo-img" alt="Click Click">
+        <div class="nav-logo-accent">
+            <span></span>
+            <span></span>
+        </div>
+    </a>
+    <ul class="nav-links">
+        <li><a href="home.html">Home</a></li>
+        <li class="nav-dropdown">
+            <a href="#">Services</a>
+            <div class="dropdown-menu">
+                <a href="services-video.html">Video Production</a>
+                <a href="#">Social Content</a>
+                <a href="#">Paid Ad Creative</a>
+                <a href="#">Motion &amp; Animation</a>
+            </div>
+        </li>
+        <li><a href="about.html" class="active">About</a></li>
+        <li><a href="home.html#contact" class="nav-cta">Let's Talk</a></li>
+    </ul>
+</nav>
+
+<!-- PAGE HERO -->
+<section id="page-hero">
+    <div class="hero-bg-blob blob-1"></div>
+    <div class="hero-bg-blob blob-2"></div>
+    <div class="page-hero-inner">
+        <div class="page-hero-eyebrow">
+            <div class="eyebrow-line"></div>
+            <span class="eyebrow-text">Our Story</span>
+        </div>
+        <h1 class="page-hero-title">Creativity<br>meets <em>performance.</em></h1>
+        <p class="page-hero-sub">Clickclick was born through a love of both high-quality creativity and measurable results. We believe marketing doesn't have to be one or the other — and we've built a team to prove it.</p>
+    </div>
+</section>
+
+<!-- STORY / VALUES -->
+<section id="story">
+    <div class="reveal">
+        <p class="section-label">Who We Are</p>
+        <h2 class="section-title">The agency that<br>bridges the gap</h2>
+    </div>
+    <div class="story-grid">
+        <div class="reveal">
+            <h3>Born from a gap in the market</h3>
+            <p>Traditional marketing agencies and video production companies have long operated in silos — one focused on strategy and distribution, the other on craft and storytelling. Clickclick was created to bridge that divide: a full-service team where cinematic quality and performance marketing work in concert, not in competition.</p>
+
+            <div class="invest-badge reveal">
+                <div class="invest-badge-icon">&#127759;</div>
+                <div class="invest-badge-text">
+                    <strong>Backed by InvestNI</strong>
+                    <span>Growing into wider markets in 2026</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="reveal">
+            <div class="story-stats">
+                <div class="stat-row">
+                    <div class="stat-icon si-teal">&#127775;</div>
+                    <div class="stat-content">
+                        <h4>High-Quality Creativity</h4>
+                        <p>Cinematic production values applied to every brief — brand films, social content, and everything in between.</p>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-icon si-pink">&#128200;</div>
+                    <div class="stat-content">
+                        <h4>Performance Marketing</h4>
+                        <p>Strategy, data, and paid media expertise to ensure your creative actually converts.</p>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-icon si-dark">&#129302;</div>
+                    <div class="stat-content">
+                        <h4>AI &amp; Automation</h4>
+                        <p>Modern quality management tools built into our workflow — faster, smarter, more consistent delivery.</p>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-icon si-mix">&#127758;</div>
+                    <div class="stat-content">
+                        <h4>360&#176; Services</h4>
+                        <p>Full funnel video management from creative to cart — we handle the complete journey so you don't have to brief five different agencies.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+    <div class="team-section-header reveal">
+        <p class="section-label">The People</p>
+        <h2 class="section-title">Meet the team<br>behind the work</h2>
+        <p class="section-sub">A small, senior, and deeply experienced group — each bringing a distinct specialism that makes the whole greater than the sum of its parts.</p>
+    </div>
+
+    <!-- Featured three -->
+    <div class="team-featured">
+
+        <!-- Kathryn -->
+        <div class="team-card reveal">
+            <div class="team-card-img">
+                <div class="team-avatar-placeholder">&#128100;</div>
+                <span class="team-img-label">Photo coming soon</span>
+            </div>
+            <div class="team-card-body">
+                <h3 class="team-card-name">Kathryn</h3>
+                <p class="team-card-role">Director &amp; Founder</p>
+                <p class="team-card-bio">With nearly 20 years of industry experience, Kathryn brings an exceptional breadth of commercial knowledge to every project. Her career spans account management, lead generation, and performance marketing — working with some of the UK's most respected organisations.</p>
+                <div class="team-card-tags">
+                    <span class="team-tag">BA Hons Business Mgmt</span>
+                    <span class="team-tag">Marketing &amp; Data Analytics</span>
+                    <span class="team-tag">Yell</span>
+                    <span class="team-tag">MRP / First Derivatives</span>
+                    <span class="team-tag">The Brains, London</span>
+                </div>
+                <div class="team-news">
+                    <p class="team-news-label">&#127942; 2026 Highlights</p>
+                    <p>Shortlisted as <strong>Transformational Leader of the Year</strong> and appointed as a judge for the <strong>Global Undergraduate Awards (GUA)</strong> in Dublin — widely known as the Junior Nobel Prize.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Louise -->
+        <div class="team-card reveal">
+            <div class="team-card-img" style="background: linear-gradient(135deg, #1a1a2e, #3a1a3a);">
+                <div class="team-avatar-placeholder">&#128100;</div>
+                <span class="team-img-label">Photo coming soon</span>
+            </div>
+            <div class="team-card-body">
+                <h3 class="team-card-name">Louise</h3>
+                <p class="team-card-role">Marketing Executive</p>
+                <p class="team-card-bio">Louise brings a marketing degree from the University of Ulster and cross-sector experience across pharmaceutical and retail industries. She is the connective tissue of our campaigns — keeping strategies coherent, timelines tight, and clients informed.</p>
+                <div class="team-card-tags">
+                    <span class="team-tag">University of Ulster</span>
+                    <span class="team-tag">Pharmaceutical</span>
+                    <span class="team-tag">Retail</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ross -->
+        <div class="team-card reveal">
+            <div class="team-card-img" style="background: linear-gradient(135deg, #0f1a2e, #0f3460);">
+                <div class="team-avatar-placeholder">&#128100;</div>
+                <span class="team-img-label">Photo coming soon</span>
+            </div>
+            <div class="team-card-body">
+                <h3 class="team-card-name">Ross</h3>
+                <p class="team-card-role">Videographer</p>
+                <p class="team-card-bio">Ross studied media at LJMU — Liverpool John Moores University — and brings a filmmaker's eye to every shoot. His experience spans the education and IT sectors, giving him an intuitive understanding of how to capture different environments and audiences authentically.</p>
+                <div class="team-card-tags">
+                    <span class="team-tag">LJMU Media Degree</span>
+                    <span class="team-tag">Education</span>
+                    <span class="team-tag">IT</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Support team -->
+    <p class="team-support-label reveal">Supporting Team</p>
+    <div class="team-support-grid">
+        <div class="support-card reveal">
+            <div class="support-avatar sa-pink">&#129489;&#8205;&#128187;</div>
+            <div class="support-info">
+                <h4>Alice</h4>
+                <span>Virtual Assistant</span>
+            </div>
+        </div>
+        <div class="support-card reveal">
+            <div class="support-avatar sa-teal">&#128202;</div>
+            <div class="support-info">
+                <h4>Dan</h4>
+                <span>Data Analytics</span>
+            </div>
+        </div>
+        <div class="support-card reveal">
+            <div class="support-avatar sa-dark">&#128187;</div>
+            <div class="support-info">
+                <h4>John</h4>
+                <span>IT Support</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- CTA -->
+<section id="cta">
+    <div class="cta-inner reveal">
+        <p class="section-label">Work With Us</p>
+        <h2 class="section-title">Let's build<br>something together</h2>
+        <p class="section-sub">Whether you need a single campaign or a full marketing partner, we'd love to hear about your goals.</p>
+        <div class="cta-btns">
+            <a href="home.html#contact" class="btn-primary">Start a Conversation</a>
+            <a href="services-video.html" class="btn-outline">Explore Our Services</a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-top">
+        <div>
+            <div class="footer-brand">Click<span>Click</span></div>
+            <p class="footer-desc">Professional video marketing for brands that want to be remembered.</p>
+        </div>
+        <div class="footer-links-col">
+            <h4>Services</h4>
+            <a href="services-video.html">Video Production</a>
+            <a href="#">Social Content</a>
+            <a href="#">Paid Ad Creative</a>
+            <a href="#">Motion &amp; Animation</a>
+        </div>
+        <div class="footer-links-col">
+            <h4>Company</h4>
+            <a href="about.html">About Us</a>
+            <a href="home.html#portfolio">Our Work</a>
+            <a href="home.html#contact">Contact</a>
+            <a href="#">Instagram</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p class="footer-copy">&#169; 2025 Click Click Video Marketing Agency. All rights reserved.</p>
+        <div class="footer-accent-bar"></div>
+    </div>
+</footer>
+
+<script>
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => entry.target.classList.add('visible'), i * 80);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
