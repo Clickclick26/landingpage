@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Production | Click Click</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FDF5E6;
+            --dark: #1a1a1a;
+            --mid: #555;
+            --light: #888;
+            --turquoise: #00bcd4;
+            --pink: #e83e8c;
+            --gradient: linear-gradient(to right, #00bcd4, #e83e8c);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--cream);
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 60px;
+            background: rgba(253,245,230,0.92);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            transition: padding 0.3s;
+        }
+        nav.scrolled { padding: 14px 60px; }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .nav-logo-img {
+            width: 130px;
+            height: 38px;
+            object-fit: cover;
+            object-position: center 8%;
+            mix-blend-mode: multiply;
+        }
+        .nav-logo-accent {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .nav-logo-accent span {
+            display: block;
+            height: 2px;
+            width: 20px;
+            border-radius: 2px;
+        }
+        .nav-logo-accent span:nth-child(1) { background: var(--turquoise); }
+        .nav-logo-accent span:nth-child(2) { background: var(--pink); }
+
+        .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 400;
+            font-size: 0.88rem;
+            letter-spacing: 0.5px;
+            color: var(--mid);
+            transition: color 0.2s;
+            text-transform: uppercase;
+        }
+        .nav-links a:hover { color: var(--dark); }
+
+        .nav-dropdown { position: relative; }
+        .nav-dropdown > a {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .nav-dropdown > a::after {
+            content: '';
+            width: 5px; height: 5px;
+            border-right: 1.5px solid var(--mid);
+            border-bottom: 1.5px solid var(--mid);
+            transform: rotate(45deg) translateY(-2px);
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+        .nav-dropdown:hover > a::after {
+            transform: rotate(-135deg) translateY(-2px);
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 16px);
+            left: 50%;
+            transform: translateX(-50%) translateY(-6px);
+            background: rgba(253,245,230,0.98);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0,0,0,0.07);
+            border-radius: 8px;
+            padding: 10px 0;
+            min-width: 200px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s, transform 0.2s;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+        }
+        .nav-dropdown:hover .dropdown-menu {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateX(-50%) translateY(0);
+        }
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 22px;
+            font-size: 0.85rem;
+            color: var(--mid) !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background 0.15s, color 0.15s;
+        }
+        .dropdown-menu a:hover { background: rgba(0,188,212,0.06); color: var(--dark) !important; }
+        .dropdown-menu a.active { color: var(--turquoise) !important; }
+
+        .nav-cta {
+            background: var(--dark);
+            color: var(--cream) !important;
+            padding: 10px 24px;
+            border-radius: 100px;
+            font-weight: 600 !important;
+            transition: opacity 0.2s !important;
+        }
+        .nav-cta:hover { opacity: 0.8; color: var(--cream) !important; }
+
+        /* ── PAGE HERO ── */
+        #page-hero {
+            padding: 160px 60px 100px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-bg-blob {
+            position: absolute;
+            width: 500px; height: 500px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        .blob-1 { background: #00bcd4; top: -80px; right: 0; }
+        .blob-2 { background: #e83e8c; bottom: -60px; left: -60px; }
+
+        .page-hero-inner { position: relative; z-index: 1; max-width: 760px; }
+
+        .page-hero-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 28px;
+            opacity: 0;
+            animation: fadeUp 0.8s 0.2s forwards;
+        }
+        .eyebrow-line { width: 40px; height: 2px; background: var(--gradient); }
+        .eyebrow-text { font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase; color: var(--light); }
+
+        .page-hero-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(3rem, 6.5vw, 5.2rem);
+            line-height: 1.0;
+            letter-spacing: -2px;
+            margin-bottom: 28px;
+            opacity: 0;
+            animation: fadeUp 0.9s 0.35s forwards;
+        }
+        .page-hero-title em {
+            font-style: italic;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .page-hero-sub {
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: var(--mid);
+            line-height: 1.75;
+            max-width: 520px;
+            opacity: 0;
+            animation: fadeUp 0.9s 0.5s forwards;
+        }
+
+        /* ── SECTION SHARED ── */
+        section { padding: 100px 60px; }
+        .section-label { font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase; color: var(--light); margin-bottom: 12px; }
+        .section-title { font-family: 'DM Serif Display', serif; font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 1.1; letter-spacing: -1px; margin-bottom: 20px; }
+        .section-sub { font-weight: 300; color: var(--mid); font-size: 1.05rem; line-height: 1.7; max-width: 500px; }
+        .section-header { margin-bottom: 64px; }
+        .accent-bar { width: 60px; height: 3px; background: var(--gradient); margin: 24px 0; }
+
+        /* ── MARQUEE ── */
+        #social-proof {
+            padding: 48px 0;
+            border-top: 1px solid rgba(0,0,0,0.06);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            overflow: hidden;
+            background: var(--cream);
+        }
+        .marquee-track {
+            display: flex;
+            animation: marquee 20s linear infinite;
+            white-space: nowrap;
+        }
+        .marquee-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 24px;
+            padding: 0 48px;
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.6rem;
+            letter-spacing: -0.5px;
+            color: var(--dark);
+            opacity: 0.75;
+            flex-shrink: 0;
+        }
+        .marquee-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--turquoise), var(--pink));
+            flex-shrink: 0;
+        }
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        /* ── VIDEO SHOWCASE ── */
+        #video-showcase { background: var(--cream); padding: 100px 60px; }
+
+        .video-main-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #111;
+            margin-bottom: 16px;
+            cursor: pointer;
+        }
+        .video-main-bg {
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 40%, #0f3460 70%, #16213e 100%);
+            position: relative;
+        }
+        .video-main-bg::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 30% 40%, rgba(0,188,212,0.25) 0%, transparent 60%),
+                        radial-gradient(ellipse at 70% 70%, rgba(232,62,140,0.2) 0%, transparent 55%);
+        }
+        .video-play-btn {
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 2;
+        }
+        .play-circle {
+            width: 88px; height: 88px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(255,255,255,0.3);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; color: #fff;
+            transition: transform 0.3s, background 0.3s, border-color 0.3s;
+        }
+        .video-main-wrap:hover .play-circle {
+            transform: scale(1.08);
+            background: var(--pink);
+            border-color: var(--pink);
+        }
+        .video-main-label {
+            position: absolute;
+            bottom: 32px; left: 36px;
+            z-index: 2;
+        }
+        .video-main-tag { font-size: 0.68rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
+        .video-main-title { font-family: 'DM Serif Display', serif; font-size: 2rem; color: #fff; letter-spacing: -0.5px; }
+
+        .video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
+        .video-thumb { position: relative; aspect-ratio: 16/9; border-radius: 6px; overflow: hidden; cursor: pointer; }
+        .video-thumb-bg { width: 100%; height: 100%; transition: transform 0.4s ease; }
+        .video-thumb:hover .video-thumb-bg { transform: scale(1.05); }
+        .vt1 { background: linear-gradient(135deg, #00bcd4, #0097a7); }
+        .vt2 { background: linear-gradient(135deg, #e83e8c, #c2185b); }
+        .vt3 { background: linear-gradient(135deg, #2c3e50, #4a6fa5); }
+
+        .video-thumb-overlay {
+            position: absolute; inset: 0;
+            background: rgba(0,0,0,0.3);
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.3s;
+        }
+        .video-thumb:hover .video-thumb-overlay { background: rgba(0,0,0,0.5); }
+        .thumb-play {
+            width: 46px; height: 46px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255,255,255,0.6);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; color: #fff;
+            transition: background 0.25s, border-color 0.25s;
+        }
+        .video-thumb:hover .thumb-play { background: var(--pink); border-color: var(--pink); }
+        .thumb-label { position: absolute; bottom: 14px; left: 16px; font-size: 0.78rem; font-weight: 600; color: #fff; letter-spacing: 0.3px; }
+        .thumb-tag { font-size: 0.62rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.55); display: block; margin-bottom: 2px; }
+
+        /* ── EXPERTISE ── */
+        #expertise { background: #f5ede0; }
+        .expertise-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+        .expertise-pillars { display: flex; flex-direction: column; gap: 0; }
+        .expertise-pillar { padding: 36px 0; border-bottom: 1px solid rgba(0,0,0,0.08); display: flex; gap: 28px; align-items: flex-start; }
+        .expertise-pillar:first-child { border-top: 1px solid rgba(0,0,0,0.08); }
+        .pillar-num { font-family: 'DM Serif Display', serif; font-size: 2.6rem; line-height: 1; color: rgba(0,0,0,0.07); flex-shrink: 0; width: 52px; letter-spacing: -2px; }
+        .pillar-content h3 { font-family: 'DM Serif Display', serif; font-size: 1.35rem; margin-bottom: 8px; letter-spacing: -0.3px; }
+        .pillar-content p { font-weight: 300; color: var(--mid); font-size: 0.93rem; line-height: 1.7; }
+
+        /* ── PROCESS ── */
+        #process { background: var(--cream); }
+        .process-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 64px; }
+        .process-step { background: #fff; padding: 48px 40px; position: relative; overflow: hidden; transition: transform 0.3s; }
+        .process-step::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: var(--gradient); transform: scaleX(0); transform-origin: left; transition: transform 0.35s ease;
+        }
+        .process-step:hover { transform: translateY(-4px); }
+        .process-step:hover::after { transform: scaleX(1); }
+        .process-step-num {
+            font-family: 'DM Serif Display', serif; font-size: 4rem; line-height: 1; letter-spacing: -3px;
+            background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 24px; display: block;
+        }
+        .process-step h3 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; letter-spacing: -0.3px; margin-bottom: 14px; }
+        .process-step p { font-weight: 300; color: var(--mid); font-size: 0.92rem; line-height: 1.7; margin-bottom: 20px; }
+        .process-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .process-tag { font-size: 0.7rem; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 12px; border-radius: 100px; border: 1px solid rgba(0,0,0,0.12); color: var(--mid); }
+
+        /* ── TEAM ── */
+        #team { background: var(--dark); color: var(--cream); }
+        .team-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+        .team-left .section-label { color: rgba(253,245,230,0.4); }
+        .team-left .section-title { color: var(--cream); }
+        .team-left .section-sub { color: rgba(253,245,230,0.55); max-width: 420px; }
+        .team-credentials { display: flex; flex-direction: column; gap: 24px; }
+        .credential-item {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 8px; padding: 28px 32px; display: flex; gap: 20px; align-items: flex-start;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .credential-item:hover { background: rgba(255,255,255,0.07); border-color: rgba(0,188,212,0.25); }
+        .credential-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+        .ci-teal { background: rgba(0,188,212,0.12); }
+        .ci-pink { background: rgba(232,62,140,0.12); }
+        .credential-item h4 { font-weight: 600; font-size: 0.95rem; color: var(--cream); margin-bottom: 4px; }
+        .credential-item p { font-weight: 300; font-size: 0.87rem; color: rgba(253,245,230,0.5); line-height: 1.6; }
+
+        /* ── CTA ── */
+        #cta { background: var(--cream); padding: 120px 60px; text-align: center; }
+        .cta-inner { max-width: 600px; margin: 0 auto; }
+        .cta-inner .section-sub { margin: 0 auto 48px; text-align: center; max-width: 440px; }
+        .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .btn-primary { background: var(--dark); color: var(--cream); padding: 16px 36px; border-radius: 100px; font-size: 0.9rem; font-weight: 600; text-decoration: none; letter-spacing: 0.3px; transition: transform 0.2s, opacity 0.2s; }
+        .btn-primary:hover { transform: translateY(-2px); opacity: 0.85; }
+        .btn-outline { border: 1.5px solid var(--dark); color: var(--dark); padding: 16px 36px; border-radius: 100px; font-size: 0.9rem; font-weight: 600; text-decoration: none; letter-spacing: 0.3px; transition: background 0.2s, color 0.2s, transform 0.2s; }
+        .btn-outline:hover { background: var(--dark); color: var(--cream); transform: translateY(-2px); }
+
+        /* ── FOOTER ── */
+        footer { background: var(--dark); color: var(--cream); padding: 60px 60px 40px; }
+        .footer-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 48px; flex-wrap: wrap; gap: 40px; }
+        .footer-brand { font-family: 'DM Serif Display', serif; font-size: 2rem; letter-spacing: -1px; }
+        .footer-brand span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .footer-desc { font-weight: 300; color: rgba(253,245,230,0.5); font-size: 0.9rem; margin-top: 10px; max-width: 260px; line-height: 1.6; }
+        .footer-links-col h4 { font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(253,245,230,0.4); margin-bottom: 20px; }
+        .footer-links-col a { display: block; font-weight: 300; font-size: 0.95rem; color: rgba(253,245,230,0.7); text-decoration: none; margin-bottom: 10px; transition: color 0.2s; }
+        .footer-links-col a:hover { color: var(--cream); }
+        .footer-bottom { border-top: 1px solid rgba(253,245,230,0.1); padding-top: 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .footer-copy { font-weight: 300; font-size: 0.82rem; color: rgba(253,245,230,0.35); }
+        .footer-accent-bar { width: 40px; height: 2px; background: var(--gradient); }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .reveal.visible { opacity: 1; transform: none; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            nav { padding: 18px 24px; }
+            .nav-links { display: none; }
+            section, #page-hero, #cta, #video-showcase { padding: 72px 24px; }
+            .expertise-layout, .team-layout { grid-template-columns: 1fr; gap: 48px; }
+            .process-steps { grid-template-columns: 1fr; }
+            .video-grid { grid-template-columns: 1fr 1fr; }
+            footer { padding: 48px 24px 32px; }
+            .footer-top { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+    <a href="home.html" class="nav-logo">
+        <img src="Final_Logo-01-01-1080x1080.png" class="nav-logo-img" alt="Click Click">
+        <div class="nav-logo-accent">
+            <span></span>
+            <span></span>
+        </div>
+    </a>
+    <ul class="nav-links">
+        <li class="nav-dropdown">
+            <a href="#">Services</a>
+            <div class="dropdown-menu">
+                <a href="services-video.html" class="active">Video Production</a>
+                <a href="#">Social Content</a>
+                <a href="#">Paid Ad Creative</a>
+                <a href="#">Motion &amp; Animation</a>
+            </div>
+        </li>
+        <li><a href="home.html#portfolio">Work</a></li>
+        <li><a href="home.html#contact">Contact</a></li>
+        <li><a href="home.html#contact" class="nav-cta">Let's Talk</a></li>
+    </ul>
+</nav>
+
+<!-- PAGE HERO -->
+<section id="page-hero">
+    <div class="hero-bg-blob blob-1"></div>
+    <div class="hero-bg-blob blob-2"></div>
+    <div class="page-hero-inner">
+        <div class="page-hero-eyebrow">
+            <div class="eyebrow-line"></div>
+            <span class="eyebrow-text">Our Services</span>
+        </div>
+        <h1 class="page-hero-title">Video<br><em>Production.</em></h1>
+        <p class="page-hero-sub">Cinematic storytelling, expertly crafted. We turn brand visions into video content that moves audiences and drives real commercial results.</p>
+    </div>
+</section>
+
+<!-- SOCIAL PROOF MARQUEE -->
+<div id="social-proof">
+    <div class="marquee-track">
+        <span class="marquee-item">Oliver Bonas <span class="marquee-dot"></span></span>
+        <span class="marquee-item">L'Occitane <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Astrid &amp; Miyu <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Revolución de Cuba <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Oliver Bonas <span class="marquee-dot"></span></span>
+        <span class="marquee-item">L'Occitane <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Astrid &amp; Miyu <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Revolución de Cuba <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Oliver Bonas <span class="marquee-dot"></span></span>
+        <span class="marquee-item">L'Occitane <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Astrid &amp; Miyu <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Revolución de Cuba <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Oliver Bonas <span class="marquee-dot"></span></span>
+        <span class="marquee-item">L'Occitane <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Astrid &amp; Miyu <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Revolución de Cuba <span class="marquee-dot"></span></span>
+    </div>
+</div>
+
+<!-- VIDEO SHOWCASE -->
+<section id="video-showcase">
+    <div class="section-header reveal">
+        <p class="section-label">Showcase</p>
+        <h2 class="section-title">Work that<br>speaks for itself</h2>
+        <p class="section-sub">A selection of recent productions — from brand films to campaign content — made for brands who expect more.</p>
+    </div>
+    <div class="video-main-wrap reveal">
+        <div class="video-main-bg"></div>
+        <div class="video-play-btn">
+            <div class="play-circle">&#9654;</div>
+        </div>
+        <div class="video-main-label">
+            <p class="video-main-tag">Featured Production</p>
+            <h3 class="video-main-title">Brand Film — Oliver Bonas</h3>
+        </div>
+    </div>
+    <div class="video-grid reveal">
+        <div class="video-thumb">
+            <div class="video-thumb-bg vt1"></div>
+            <div class="video-thumb-overlay"><div class="thumb-play">&#9654;</div></div>
+            <div class="thumb-label"><span class="thumb-tag">Campaign Film</span>L'Occitane — Seasonal</div>
+        </div>
+        <div class="video-thumb">
+            <div class="video-thumb-bg vt2"></div>
+            <div class="video-thumb-overlay"><div class="thumb-play">&#9654;</div></div>
+            <div class="thumb-label"><span class="thumb-tag">Social Series</span>Astrid &amp; Miyu — Reels</div>
+        </div>
+        <div class="video-thumb">
+            <div class="video-thumb-bg vt3"></div>
+            <div class="video-thumb-overlay"><div class="thumb-play">&#9654;</div></div>
+            <div class="thumb-label"><span class="thumb-tag">Brand Atmosphere</span>Revolución de Cuba</div>
+        </div>
+    </div>
+</section>
+
+<!-- EXPERTISE -->
+<section id="expertise">
+    <div class="expertise-layout">
+        <div class="reveal">
+            <p class="section-label">Our Craft</p>
+            <h2 class="section-title">Known for what<br><em>others miss</em></h2>
+            <div class="accent-bar"></div>
+            <p class="section-sub">Great video isn't just technically perfect — it's emotionally resonant. We bring a filmmaker's sensibility to every brief, no matter the format or platform.</p>
+        </div>
+        <div class="expertise-pillars reveal">
+            <div class="expertise-pillar">
+                <span class="pillar-num">01</span>
+                <div class="pillar-content">
+                    <h3>Cinematic Quality</h3>
+                    <p>We shoot with professional-grade cameras, lenses, and lighting rigs — the kind of equipment and technique that gives your brand imagery a genuinely filmic look.</p>
+                </div>
+            </div>
+            <div class="expertise-pillar">
+                <span class="pillar-num">02</span>
+                <div class="pillar-content">
+                    <h3>Expert Transitions</h3>
+                    <p>Our editors treat transitions as a creative tool — not an afterthought. From match cuts to fluid morphs, the edit itself becomes part of the story.</p>
+                </div>
+            </div>
+            <div class="expertise-pillar">
+                <span class="pillar-num">03</span>
+                <div class="pillar-content">
+                    <h3>The Human Side of Videography</h3>
+                    <p>We believe the best brand videos capture real human moments. We direct with warmth and patience to draw out authentic energy that audiences instinctively trust.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+    <div class="section-header reveal">
+        <p class="section-label">How We Work</p>
+        <h2 class="section-title">The process<br>behind the work</h2>
+        <p class="section-sub">From the first conversation to the final file, every stage is designed to keep you confident and in control.</p>
+    </div>
+    <div class="process-steps">
+        <div class="process-step reveal">
+            <span class="process-step-num">01</span>
+            <h3>Consultative Briefing</h3>
+            <p>We open every project with a deep-dive creative session — no templates, no assumptions. We listen first, then build a clear shared vision through detailed storyboards and visual moodboards that map the exact look and feel of your film.</p>
+            <div class="process-tags">
+                <span class="process-tag">Discovery Call</span>
+                <span class="process-tag">Storyboarding</span>
+                <span class="process-tag">Visual Moodboards</span>
+            </div>
+        </div>
+        <div class="process-step reveal">
+            <span class="process-step-num">02</span>
+            <h3>Pre-Production</h3>
+            <p>Meticulous preparation is what separates good video from great video. We handle location scouting, talent casting, shot-list creation, and logistics — so shoot day runs without a hitch and every minute on set is used well.</p>
+            <div class="process-tags">
+                <span class="process-tag">Location Scouting</span>
+                <span class="process-tag">Casting</span>
+                <span class="process-tag">Shot Lists</span>
+            </div>
+        </div>
+        <div class="process-step reveal">
+            <span class="process-step-num">03</span>
+            <h3>Professional Colour Grading</h3>
+            <p>In post-production, our colourists apply a bespoke grade that gives each video a distinctive, intentional look — enriching skin tones, building atmosphere, and ensuring every frame feels like it belongs to a cohesive visual world.</p>
+            <div class="process-tags">
+                <span class="process-tag">Colour Grading</span>
+                <span class="process-tag">Grade Consistency</span>
+                <span class="process-tag">Final Delivery</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+    <div class="team-layout">
+        <div class="team-left reveal">
+            <p class="section-label">The Team</p>
+            <h2 class="section-title" style="color:var(--cream)">Trained at the<br>best in the world</h2>
+            <div class="accent-bar"></div>
+            <p class="section-sub">Our in-house crew combines formal academic training with years of hands-on production experience across commercial, documentary, and editorial work.</p>
+        </div>
+        <div class="team-credentials reveal">
+            <div class="credential-item">
+                <div class="credential-icon ci-teal">&#127891;</div>
+                <div>
+                    <h4>London Film School</h4>
+                    <p>Members of our team have studied at one of the world's most respected film institutions — bringing a rigorous, artistic approach to every production.</p>
+                </div>
+            </div>
+            <div class="credential-item">
+                <div class="credential-icon ci-pink">&#127891;</div>
+                <div>
+                    <h4>LJMU — Liverpool John Moores University</h4>
+                    <p>Our team's roots in media at LJMU gave us a grounding in both the technical craft and the cultural context that makes video resonate.</p>
+                </div>
+            </div>
+            <div class="credential-item">
+                <div class="credential-icon ci-teal">&#127909;</div>
+                <div>
+                    <h4>Real-World Production Experience</h4>
+                    <p>Academic foundations meet commercial instinct. We've delivered for global retail brands, hospitality groups, and fast-growth DTC businesses.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+    <div class="cta-inner reveal">
+        <p class="section-label">Ready to begin?</p>
+        <h2 class="section-title">Let's make<br>something great</h2>
+        <p class="section-sub">Tell us about your project — what you're building, who you're reaching, and what success looks like. We'll take it from there.</p>
+        <div class="cta-btns">
+            <a href="home.html#contact" class="btn-primary">Start a Project</a>
+            <a href="home.html#portfolio" class="btn-outline">See More Work</a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-top">
+        <div>
+            <div class="footer-brand">Click<span>Click</span></div>
+            <p class="footer-desc">Professional video marketing for brands that want to be remembered.</p>
+        </div>
+        <div class="footer-links-col">
+            <h4>Services</h4>
+            <a href="services-video.html">Video Production</a>
+            <a href="#">Social Content</a>
+            <a href="#">Paid Ad Creative</a>
+            <a href="#">Motion &amp; Animation</a>
+        </div>
+        <div class="footer-links-col">
+            <h4>Company</h4>
+            <a href="home.html#portfolio">Our Work</a>
+            <a href="home.html#contact">Contact</a>
+            <a href="#">Instagram</a>
+            <a href="#">LinkedIn</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p class="footer-copy">&#169; 2025 Click Click Video Marketing Agency. All rights reserved.</p>
+        <div class="footer-accent-bar"></div>
+    </div>
+</footer>
+
+<script>
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => entry.target.classList.add('visible'), i * 80);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
