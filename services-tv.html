@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TV & Streaming Advertising | Clickclick</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FDF5E6;
+            --dark: #1a1a1a;
+            --mid: #555;
+            --light: #888;
+            --turquoise: #00bcd4;
+            --pink: #e83e8c;
+            --gradient: linear-gradient(to right, #00bcd4, #e83e8c);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { background-color: var(--cream); font-family: 'Poppins', sans-serif; color: var(--dark); overflow-x: hidden; }
+
+        /* ── NAV ── */
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 22px 60px; background: rgba(253,245,230,0.92); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,0,0,0.06); transition: padding 0.3s; }
+        nav.scrolled { padding: 14px 60px; }
+        .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .nav-logo-img { width: 130px; height: 38px; object-fit: cover; object-position: center 8%; mix-blend-mode: multiply; }
+        .nav-logo-accent { display: flex; flex-direction: column; gap: 4px; }
+        .nav-logo-accent span { display: block; height: 2px; width: 20px; border-radius: 2px; }
+        .nav-logo-accent span:nth-child(1) { background: var(--turquoise); }
+        .nav-logo-accent span:nth-child(2) { background: var(--pink); }
+        .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; font-weight: 400; font-size: 0.88rem; letter-spacing: 0.5px; color: var(--mid); transition: color 0.2s; text-transform: uppercase; }
+        .nav-links a:hover { color: var(--dark); }
+        .nav-links a.active { color: var(--dark); font-weight: 600; }
+        .nav-dropdown { position: relative; }
+        .nav-dropdown > a { display: flex; align-items: center; gap: 5px; }
+        .nav-dropdown > a::after { content: ''; width: 5px; height: 5px; border-right: 1.5px solid var(--mid); border-bottom: 1.5px solid var(--mid); transform: rotate(45deg) translateY(-2px); display: inline-block; transition: transform 0.2s; }
+        .nav-dropdown:hover > a::after { transform: rotate(-135deg) translateY(-2px); }
+        .dropdown-menu { position: absolute; top: calc(100% + 16px); left: 50%; transform: translateX(-50%) translateY(-6px); background: rgba(253,245,230,0.98); backdrop-filter: blur(12px); border: 1px solid rgba(0,0,0,0.07); border-radius: 8px; padding: 10px 0; min-width: 200px; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+        .nav-dropdown:hover .dropdown-menu { opacity: 1; pointer-events: all; transform: translateX(-50%) translateY(0); }
+        .dropdown-menu a { display: block; padding: 10px 22px; font-size: 0.85rem; color: var(--mid) !important; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.15s, color 0.15s; }
+        .dropdown-menu a:hover { background: rgba(0,188,212,0.06); color: var(--dark) !important; }
+        .dropdown-menu a.active { color: var(--turquoise) !important; }
+        .nav-cta { background: var(--dark); color: var(--cream) !important; padding: 10px 24px; border-radius: 100px; font-weight: 600 !important; transition: opacity 0.2s !important; }
+        .nav-cta:hover { opacity: 0.8; color: var(--cream) !important; }
+
+        /* ── PAGE HERO ── */
+        #page-hero { padding: 160px 60px 100px; position: relative; overflow: hidden; }
+        .hero-bg-blob { position: absolute; width: 500px; height: 500px; border-radius: 50%; filter: blur(120px); opacity: 0.15; pointer-events: none; }
+        .blob-1 { background: #00bcd4; top: -80px; right: 0; }
+        .blob-2 { background: #e83e8c; bottom: -60px; left: -60px; }
+        .page-hero-inner { position: relative; z-index: 1; max-width: 760px; }
+        .page-hero-eyebrow { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; opacity: 0; animation: fadeUp 0.8s 0.2s forwards; }
+        .eyebrow-line { width: 40px; height: 2px; background: var(--gradient); }
+        .eyebrow-text { font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase; color: var(--light); }
+        .page-hero-title { font-family: 'DM Serif Display', serif; font-size: clamp(2.6rem, 6vw, 5rem); line-height: 1.0; letter-spacing: -2px; margin-bottom: 28px; opacity: 0; animation: fadeUp 0.9s 0.35s forwards; }
+        .page-hero-title em { font-style: italic; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .page-hero-sub { font-size: 1.1rem; font-weight: 300; color: var(--mid); line-height: 1.75; max-width: 520px; opacity: 0; animation: fadeUp 0.9s 0.5s forwards; }
+
+        /* ── SHARED ── */
+        section { padding: 100px 60px; }
+        .section-label { font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase; color: var(--light); margin-bottom: 12px; }
+        .section-title { font-family: 'DM Serif Display', serif; font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 1.1; letter-spacing: -1px; margin-bottom: 20px; }
+        .section-sub { font-weight: 300; color: var(--mid); font-size: 1.05rem; line-height: 1.7; max-width: 500px; }
+        .section-header { margin-bottom: 64px; }
+        .accent-bar { width: 60px; height: 3px; background: var(--gradient); margin: 24px 0; }
+
+        /* ── MARQUEE ── */
+        #social-proof { padding: 48px 0; border-top: 1px solid rgba(0,0,0,0.06); border-bottom: 1px solid rgba(0,0,0,0.06); overflow: hidden; background: var(--cream); }
+        .marquee-track { display: flex; animation: marquee 20s linear infinite; white-space: nowrap; }
+        .marquee-item { display: inline-flex; align-items: center; gap: 24px; padding: 0 48px; font-family: 'DM Serif Display', serif; font-size: 1.6rem; letter-spacing: -0.5px; color: var(--dark); opacity: 0.75; flex-shrink: 0; }
+        .marquee-dot { width: 6px; height: 6px; border-radius: 50%; background: linear-gradient(135deg, var(--turquoise), var(--pink)); flex-shrink: 0; }
+        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        /* ── PLATFORMS ── */
+        #platforms { background: var(--dark); color: var(--cream); }
+        .platforms-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+        .platforms-left .section-label { color: rgba(253,245,230,0.4); }
+        .platforms-left .section-title { color: var(--cream); }
+        .platforms-left .section-sub { color: rgba(253,245,230,0.6); max-width: 460px; }
+
+        .platform-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .platform-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 28px 24px; display: flex; flex-direction: column; gap: 12px; transition: background 0.3s, border-color 0.3s; }
+        .platform-card:hover { background: rgba(255,255,255,0.08); border-color: rgba(0,188,212,0.3); }
+        .platform-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+        .pi-teal { background: rgba(0,188,212,0.12); }
+        .pi-pink { background: rgba(232,62,140,0.12); }
+        .pi-light { background: rgba(255,255,255,0.08); }
+        .platform-card h4 { font-weight: 600; font-size: 1rem; color: var(--cream); letter-spacing: -0.2px; }
+        .platform-card p { font-weight: 300; font-size: 0.84rem; color: rgba(253,245,230,0.5); line-height: 1.6; }
+
+        /* ── UK MAP SECTION ── */
+        #coverage { background: var(--dark); padding: 100px 60px; overflow: hidden; }
+        .coverage-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+        .coverage-text .section-label { color: rgba(253,245,230,0.4); }
+        .coverage-text .section-title { color: var(--cream); }
+        .coverage-text .section-sub { color: rgba(253,245,230,0.55); max-width: 420px; }
+
+        .coverage-legend { margin-top: 36px; display: flex; flex-direction: column; gap: 14px; }
+        .legend-item { display: flex; align-items: center; gap: 14px; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .ld-teal { background: var(--turquoise); box-shadow: 0 0 8px rgba(0,188,212,0.8); }
+        .ld-pink { background: var(--pink); box-shadow: 0 0 8px rgba(232,62,140,0.8); }
+        .ld-white { background: rgba(255,255,255,0.6); }
+        .legend-text { font-size: 0.82rem; font-weight: 300; color: rgba(253,245,230,0.55); }
+        .legend-text strong { color: var(--cream); font-weight: 600; }
+
+        /* Map container */
+        .map-wrap { position: relative; display: flex; align-items: center; justify-content: center; }
+        .map-svg-wrap { position: relative; width: 100%; max-width: 420px; }
+        .map-svg-wrap svg { width: 100%; height: auto; filter: drop-shadow(0 0 40px rgba(0,188,212,0.08)); }
+
+        /* Pulse rings on city dots */
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(3.2); opacity: 0; }
+        }
+        @keyframes pulse-ring-slow {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(2.8); opacity: 0; }
+        }
+        @keyframes city-glow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        @keyframes map-fadein {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes connect-line {
+            from { stroke-dashoffset: 200; }
+            to { stroke-dashoffset: 0; }
+        }
+
+        .city-group { cursor: default; }
+        .city-pulse {
+            animation: pulse-ring 2.2s ease-out infinite;
+            transform-origin: center;
+        }
+        .city-pulse-2 {
+            animation: pulse-ring 2.2s ease-out 0.7s infinite;
+            transform-origin: center;
+        }
+        .city-dot {
+            animation: city-glow 3s ease-in-out infinite;
+        }
+
+        /* Stagger delays for cities */
+        .city-group:nth-child(1) .city-pulse { animation-delay: 0s; }
+        .city-group:nth-child(2) .city-pulse { animation-delay: 0.3s; }
+        .city-group:nth-child(3) .city-pulse { animation-delay: 0.6s; }
+        .city-group:nth-child(4) .city-pulse { animation-delay: 0.9s; }
+        .city-group:nth-child(5) .city-pulse { animation-delay: 1.2s; }
+        .city-group:nth-child(6) .city-pulse { animation-delay: 0.15s; }
+        .city-group:nth-child(7) .city-pulse { animation-delay: 0.45s; }
+        .city-group:nth-child(8) .city-pulse { animation-delay: 0.75s; }
+        .city-group:nth-child(9) .city-pulse { animation-delay: 1.05s; }
+        .city-group:nth-child(10) .city-pulse { animation-delay: 1.35s; }
+
+        .map-svg-wrap { animation: map-fadein 1s 0.4s both; }
+
+        .connect-path {
+            stroke-dasharray: 200;
+            animation: connect-line 2s ease-out forwards;
+        }
+
+        /* Coverage stats bar */
+        .coverage-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 48px; background: rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden; }
+        .cov-stat { background: rgba(255,255,255,0.03); padding: 24px 20px; text-align: center; }
+        .cov-stat-num { font-family: 'DM Serif Display', serif; font-size: 1.8rem; letter-spacing: -1px; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; margin-bottom: 4px; }
+        .cov-stat-label { font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(253,245,230,0.35); }
+
+        @media (max-width: 900px) {
+            #coverage { padding: 72px 24px; }
+            .coverage-inner { grid-template-columns: 1fr; gap: 48px; }
+            .map-svg-wrap { max-width: 300px; margin: 0 auto; }
+            .coverage-stats { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        /* ── 2026 ADVANTAGE ── */
+        #advantage { background: var(--cream); }
+        .advantage-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+
+        .stat-stack { display: flex; flex-direction: column; gap: 0; border: 1px solid rgba(0,0,0,0.07); border-radius: 8px; overflow: hidden; }
+        .stat-row { display: flex; align-items: center; gap: 20px; padding: 28px; border-bottom: 1px solid rgba(0,0,0,0.06); background: #fff; transition: background 0.2s; }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-row:hover { background: #fdf8f0; }
+        .stat-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+        .si-teal { background: rgba(0,188,212,0.1); }
+        .si-pink { background: rgba(232,62,140,0.1); }
+        .si-dark { background: rgba(26,26,26,0.06); }
+        .stat-content h4 { font-weight: 600; font-size: 0.92rem; margin-bottom: 2px; color: var(--dark); }
+        .stat-content p { font-weight: 300; font-size: 0.84rem; color: var(--mid); line-height: 1.5; }
+
+        /* ── CONTEXTUAL TARGETING ── */
+        #targeting { background: #f5ede0; }
+        .targeting-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+        .targeting-steps { display: flex; flex-direction: column; gap: 0; }
+        .targeting-step { padding: 36px 0; border-bottom: 1px solid rgba(0,0,0,0.08); display: flex; gap: 28px; align-items: flex-start; }
+        .targeting-step:first-child { border-top: 1px solid rgba(0,0,0,0.08); }
+        .step-num { font-family: 'DM Serif Display', serif; font-size: 2.6rem; line-height: 1; color: rgba(0,0,0,0.07); flex-shrink: 0; width: 52px; letter-spacing: -2px; }
+        .step-content h3 { font-family: 'DM Serif Display', serif; font-size: 1.35rem; margin-bottom: 8px; letter-spacing: -0.3px; }
+        .step-content p { font-weight: 300; color: var(--mid); font-size: 0.93rem; line-height: 1.7; }
+        .example-tag { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; padding: 5px 12px; border-radius: 100px; background: rgba(0,188,212,0.08); border: 1px solid rgba(0,188,212,0.18); font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase; color: var(--turquoise); font-weight: 600; }
+
+        /* ── NON-SKIP TRUST ── */
+        #trust { background: var(--cream); }
+        .trust-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 64px; }
+        .trust-card { background: #fff; padding: 48px 40px; position: relative; overflow: hidden; transition: transform 0.3s; }
+        .trust-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient); transform: scaleX(0); transform-origin: left; transition: transform 0.35s ease; }
+        .trust-card:hover { transform: translateY(-4px); }
+        .trust-card:hover::after { transform: scaleX(1); }
+        .trust-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 28px; font-size: 1.4rem; }
+        .ti-teal { background: rgba(0,188,212,0.1); }
+        .ti-pink { background: rgba(232,62,140,0.1); }
+        .ti-mix { background: linear-gradient(135deg, rgba(0,188,212,0.1), rgba(232,62,140,0.1)); }
+        .trust-card h3 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; letter-spacing: -0.3px; margin-bottom: 14px; }
+        .trust-card p { font-weight: 300; color: var(--mid); font-size: 0.92rem; line-height: 1.7; }
+
+        /* ── CTA ── */
+        #cta { background: var(--cream); padding: 120px 60px; text-align: center; }
+        .cta-inner { max-width: 600px; margin: 0 auto; }
+        .cta-inner .section-sub { margin: 0 auto 48px; text-align: center; max-width: 440px; }
+        .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .btn-primary { background: var(--dark); color: var(--cream); padding: 16px 36px; border-radius: 100px; font-size: 0.9rem; font-weight: 600; text-decoration: none; letter-spacing: 0.3px; transition: transform 0.2s, opacity 0.2s; }
+        .btn-primary:hover { transform: translateY(-2px); opacity: 0.85; }
+        .btn-outline { border: 1.5px solid var(--dark); color: var(--dark); padding: 16px 36px; border-radius: 100px; font-size: 0.9rem; font-weight: 600; text-decoration: none; letter-spacing: 0.3px; transition: background 0.2s, color 0.2s, transform 0.2s; }
+        .btn-outline:hover { background: var(--dark); color: var(--cream); transform: translateY(-2px); }
+
+        /* ── FOOTER ── */
+        footer { background: var(--dark); color: var(--cream); padding: 60px 60px 40px; }
+        .footer-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 48px; flex-wrap: wrap; gap: 40px; }
+        .footer-brand { font-family: 'DM Serif Display', serif; font-size: 2rem; letter-spacing: -1px; }
+        .footer-brand span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .footer-desc { font-weight: 300; color: rgba(253,245,230,0.5); font-size: 0.9rem; margin-top: 10px; max-width: 260px; line-height: 1.6; }
+        .footer-links-col h4 { font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(253,245,230,0.4); margin-bottom: 20px; }
+        .footer-links-col a { display: block; font-weight: 300; font-size: 0.95rem; color: rgba(253,245,230,0.7); text-decoration: none; margin-bottom: 10px; transition: color 0.2s; }
+        .footer-links-col a:hover { color: var(--cream); }
+        .footer-bottom { border-top: 1px solid rgba(253,245,230,0.1); padding-top: 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .footer-copy { font-weight: 300; font-size: 0.82rem; color: rgba(253,245,230,0.35); }
+        .footer-accent-bar { width: 40px; height: 2px; background: var(--gradient); }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .reveal.visible { opacity: 1; transform: none; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            nav { padding: 18px 24px; }
+            .nav-links { display: none; }
+            section, #page-hero, #cta { padding: 72px 24px; }
+            .platforms-layout, .advantage-layout, .targeting-layout { grid-template-columns: 1fr; gap: 48px; }
+            .platform-cards { grid-template-columns: 1fr 1fr; }
+            .trust-grid { grid-template-columns: 1fr; }
+            footer { padding: 48px 24px 32px; }
+            .footer-top { flex-direction: column; }
+        }
+        @media (max-width: 500px) {
+            .platform-cards { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+    <a href="home.html" class="nav-logo">
+        <img src="Final_Logo-01-01-1080x1080.png" class="nav-logo-img" alt="Clickclick">
+        <div class="nav-logo-accent"><span></span><span></span></div>
+    </a>
+    <ul class="nav-links">
+        <li><a href="home.html">Home</a></li>
+        <li class="nav-dropdown">
+            <a href="#">Services</a>
+            <div class="dropdown-menu">
+                <a href="services-video.html">Video Production</a>
+                <a href="services-cgi-animation.html">CGI &amp; Animation</a>
+                <a href="services-tv.html" class="active">TV &amp; Streaming</a>
+                <a href="#">Paid Ad Creative</a>
+            </div>
+        </li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="academy.html">Academy</a></li>
+        <li><a href="booking.html" class="nav-cta">Book a Call</a></li>
+    </ul>
+</nav>
+
+<!-- PAGE HERO -->
+<section id="page-hero">
+    <div class="hero-bg-blob blob-1"></div>
+    <div class="hero-bg-blob blob-2"></div>
+    <div class="page-hero-inner">
+        <div class="page-hero-eyebrow">
+            <div class="eyebrow-line"></div>
+            <span class="eyebrow-text">Our Services</span>
+        </div>
+        <h1 class="page-hero-title">Premium TV &amp;<br><em>Streaming Ads.</em></h1>
+        <p class="page-hero-sub">Your brand on the big screen — without the big-brand budget. We place non-skippable ads alongside premium content on Sky, Netflix, Amazon Prime, and Disney+, and we handle every detail so you simply get the results.</p>
+    </div>
+</section>
+
+<!-- MARQUEE -->
+<div id="social-proof">
+    <div class="marquee-track">
+        <span class="marquee-item">Oliver Bonas <span class="marquee-dot"></span></span>
+        <span class="marquee-item">L'Occitane <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Astrid &amp; Miyu <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Revolución de Cuba <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Oliver Bonas <span class="marquee-dot"></span></span>
+        <span class="marquee-item">L'Occitane <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Astrid &amp; Miyu <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Revolución de Cuba <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Oliver Bonas <span class="marquee-dot"></span></span>
+        <span class="marquee-item">L'Occitane <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Astrid &amp; Miyu <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Revolución de Cuba <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Oliver Bonas <span class="marquee-dot"></span></span>
+        <span class="marquee-item">L'Occitane <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Astrid &amp; Miyu <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Revolución de Cuba <span class="marquee-dot"></span></span>
+    </div>
+</div>
+
+<!-- PLATFORMS -->
+<section id="platforms">
+    <div class="platforms-layout">
+        <div class="platforms-left reveal">
+            <p class="section-label">The Platforms</p>
+            <h2 class="section-title" style="color:var(--cream)">Your ad where<br>audiences are<br><em style="font-style:italic; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">already watching.</em></h2>
+            <div class="accent-bar"></div>
+            <p class="section-sub">We place your advertising across the UK's most-watched premium streaming and broadcast platforms — the same screens your customers are settled in front of every evening. We manage the buying, the compliance, and the placement. You focus on your business.</p>
+        </div>
+        <div class="platform-cards reveal">
+            <div class="platform-card">
+                <div class="platform-icon pi-teal">&#128250;</div>
+                <h4>Sky</h4>
+                <p>Reach millions of engaged UK households across Sky's broad portfolio of premium sport, drama, and entertainment channels.</p>
+            </div>
+            <div class="platform-card">
+                <div class="platform-icon pi-pink">&#127910;</div>
+                <h4>Netflix</h4>
+                <p>Access Netflix's ad-supported tier and place your brand alongside binge-worthy originals watched by the UK's most valuable streaming audience.</p>
+            </div>
+            <div class="platform-card">
+                <div class="platform-icon pi-light">&#128666;</div>
+                <h4>Amazon Prime</h4>
+                <p>Advertise within Amazon's premium content library — from major sporting events to award-winning original series watched across every device.</p>
+            </div>
+            <div class="platform-card">
+                <div class="platform-icon pi-teal">&#11088;</div>
+                <h4>Disney+</h4>
+                <p>Appear alongside Disney, Marvel, Star Wars, and National Geographic content — reaching an exceptionally loyal, family-oriented audience at the height of their engagement.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- UK & IRELAND COVERAGE MAP -->
+<section id="coverage">
+    <div class="coverage-inner">
+        <div class="coverage-text reveal">
+            <p class="section-label">Audience Reach</p>
+            <h2 class="section-title" style="color:var(--cream)">Every corner<br>of the UK<br><em style="font-style:italic; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">&amp; Ireland.</em></h2>
+            <div class="accent-bar"></div>
+            <p class="section-sub">Streaming advertising removes the geographic boundaries of traditional TV. Your ad reaches viewers from London to Edinburgh, Belfast to Cork — simultaneously, on a single campaign.</p>
+            <div class="coverage-legend">
+                <div class="legend-item">
+                    <div class="legend-dot ld-teal"></div>
+                    <span class="legend-text"><strong>Major cities</strong> — highest viewership &amp; streaming density</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot ld-pink"></div>
+                    <span class="legend-text"><strong>Regional hubs</strong> — strong secondary markets</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot ld-white"></div>
+                    <span class="legend-text"><strong>Full national coverage</strong> — every ad-supported household</span>
+                </div>
+            </div>
+            <div class="coverage-stats reveal">
+                <div class="cov-stat">
+                    <span class="cov-stat-num">26M+</span>
+                    <span class="cov-stat-label">UK Viewers</span>
+                </div>
+                <div class="cov-stat">
+                    <span class="cov-stat-num">4</span>
+                    <span class="cov-stat-label">Nations</span>
+                </div>
+                <div class="cov-stat">
+                    <span class="cov-stat-num">100%</span>
+                    <span class="cov-stat-label">Non-Skip</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="map-wrap reveal">
+            <div class="map-svg-wrap">
+                <svg viewBox="0 0 340 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="landGrad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#2a2a3a"/>
+                            <stop offset="100%" stop-color="#1e1e2e"/>
+                        </linearGradient>
+                        <linearGradient id="irelandGrad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#252535"/>
+                            <stop offset="100%" stop-color="#1a1a2a"/>
+                        </linearGradient>
+                        <radialGradient id="glowTeal" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#00bcd4" stop-opacity="0.3"/>
+                            <stop offset="100%" stop-color="#00bcd4" stop-opacity="0"/>
+                        </radialGradient>
+                        <radialGradient id="glowPink" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#e83e8c" stop-opacity="0.3"/>
+                            <stop offset="100%" stop-color="#e83e8c" stop-opacity="0"/>
+                        </radialGradient>
+                        <filter id="blur4">
+                            <feGaussianBlur stdDeviation="4"/>
+                        </filter>
+                    </defs>
+
+                    <!-- ── ENGLAND ── -->
+                    <path d="M148 210 L155 195 L162 185 L172 178 L182 172 L196 168 L208 166 L218 164 L228 162
+                             L238 160 L244 158 L248 162 L252 168 L256 175 L258 182 L260 190
+                             L258 198 L256 206 L260 212 L264 218 L266 226 L264 234 L260 240
+                             L256 248 L252 256 L248 262 L244 268 L242 276 L240 282 L236 288
+                             L232 294 L228 298 L224 304 L220 310 L218 316 L216 322 L214 328
+                             L210 332 L206 336 L202 340 L198 344 L196 350 L194 354 L192 358
+                             L188 360 L184 358 L180 356 L178 352 L176 348 L174 342 L172 336
+                             L170 330 L168 324 L166 318 L164 312 L162 306 L160 300 L158 294
+                             L156 288 L154 282 L152 276 L150 270 L148 264 L146 258 L144 252
+                             L142 246 L140 240 L138 234 L138 228 L140 222 L144 216 L148 210Z"
+                          fill="url(#landGrad)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+
+                    <!-- Cornwall peninsula -->
+                    <path d="M188 360 L186 366 L182 372 L178 376 L174 378 L170 376 L168 370 L170 364 L174 360 L180 358 L184 358 L188 360Z"
+                          fill="url(#landGrad)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+                    <!-- ── WALES ── -->
+                    <path d="M148 210 L144 216 L140 222 L136 226 L132 228 L128 230 L124 232
+                             L120 236 L118 242 L120 248 L124 252 L128 254 L132 256 L136 256
+                             L140 258 L142 264 L142 268 L138 268 L134 266 L130 264 L126 264
+                             L124 268 L126 274 L130 278 L134 280 L138 280 L142 278 L144 282
+                             L146 288 L148 292 L150 296 L152 300 L154 302 L156 298 L158 294
+                             L156 288 L154 282 L152 276 L150 270 L148 264 L146 258 L144 252
+                             L142 246 L140 240 L138 234 L138 228 L140 222 L144 216 L148 210Z"
+                          fill="url(#landGrad)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+
+                    <!-- ── SCOTLAND mainland ── -->
+                    <path d="M148 210 L150 202 L152 194 L154 186 L156 178 L158 170 L160 162
+                             L162 154 L162 146 L160 138 L158 130 L158 122 L160 114 L164 108
+                             L168 104 L172 100 L178 98 L184 96 L190 96 L196 98 L200 102
+                             L204 106 L208 110 L212 114 L216 118 L218 124 L216 130 L214 136
+                             L212 142 L210 148 L210 154 L212 160 L214 166 L218 170 L222 166
+                             L226 162 L228 162 L218 164 L208 166 L196 168 L182 172 L172 178
+                             L162 185 L155 195 L148 210Z"
+                          fill="url(#landGrad)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+
+                    <!-- Scotland NW peninsula -->
+                    <path d="M160 114 L156 108 L152 102 L148 98 L144 96 L140 98 L138 104
+                             L140 110 L144 114 L148 116 L152 116 L156 114 L160 114Z"
+                          fill="url(#landGrad)" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+
+                    <!-- ── NORTHERN IRELAND ── -->
+                    <path d="M94 188 L100 182 L108 178 L116 176 L122 178 L128 182 L130 188
+                             L128 194 L122 198 L116 200 L110 198 L104 194 L98 192 L94 188Z"
+                          fill="url(#irelandGrad)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+
+                    <!-- ── REPUBLIC OF IRELAND ── -->
+                    <path d="M72 226 L78 214 L86 204 L94 198 L100 196 L106 198 L110 204
+                             L112 212 L112 220 L110 228 L108 236 L106 244 L104 252 L100 258
+                             L96 262 L90 264 L84 262 L78 258 L74 252 L70 244 L68 236 L68 230
+                             L72 226Z"
+                          fill="url(#irelandGrad)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+
+                    <!-- ── ISLE OF MAN ── -->
+                    <ellipse cx="130" cy="208" rx="6" ry="9" fill="url(#landGrad)" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+
+                    <!-- Soft glow behind land masses -->
+                    <ellipse cx="190" cy="270" rx="80" ry="100" fill="url(#glowTeal)" filter="url(#blur4)" opacity="0.4"/>
+                    <ellipse cx="90" cy="230" rx="50" ry="60" fill="url(#glowPink)" filter="url(#blur4)" opacity="0.3"/>
+
+                    <!-- ══ CITY DOTS ══ -->
+
+                    <!-- London (teal, major) -->
+                    <g class="city-group">
+                        <circle cx="224" cy="300" r="18" fill="url(#glowTeal)" class="city-pulse" opacity="0.5"/>
+                        <circle cx="224" cy="300" r="12" fill="url(#glowTeal)" class="city-pulse-2" opacity="0.4"/>
+                        <circle cx="224" cy="300" r="5" fill="#00bcd4" class="city-dot"/>
+                        <circle cx="224" cy="300" r="2.5" fill="white"/>
+                        <text x="231" y="304" font-family="Poppins, sans-serif" font-size="9" fill="rgba(255,255,255,0.7)" font-weight="600">London</text>
+                    </g>
+
+                    <!-- Manchester (teal, major) -->
+                    <g class="city-group">
+                        <circle cx="178" cy="230" r="14" fill="url(#glowTeal)" class="city-pulse" opacity="0.45"/>
+                        <circle cx="178" cy="230" r="4.5" fill="#00bcd4" class="city-dot"/>
+                        <circle cx="178" cy="230" r="2" fill="white"/>
+                        <text x="185" y="234" font-family="Poppins, sans-serif" font-size="8.5" fill="rgba(255,255,255,0.65)" font-weight="500">Manchester</text>
+                    </g>
+
+                    <!-- Birmingham (teal, major) -->
+                    <g class="city-group">
+                        <circle cx="196" cy="264" r="13" fill="url(#glowTeal)" class="city-pulse" opacity="0.4"/>
+                        <circle cx="196" cy="264" r="4" fill="#00bcd4" class="city-dot"/>
+                        <circle cx="196" cy="264" r="2" fill="white"/>
+                        <text x="203" y="268" font-family="Poppins, sans-serif" font-size="8.5" fill="rgba(255,255,255,0.65)" font-weight="500">Birmingham</text>
+                    </g>
+
+                    <!-- Edinburgh (pink, major) -->
+                    <g class="city-group">
+                        <circle cx="180" cy="158" r="14" fill="url(#glowPink)" class="city-pulse" opacity="0.45"/>
+                        <circle cx="180" cy="158" r="4.5" fill="#e83e8c" class="city-dot"/>
+                        <circle cx="180" cy="158" r="2" fill="white"/>
+                        <text x="187" y="162" font-family="Poppins, sans-serif" font-size="8.5" fill="rgba(255,255,255,0.65)" font-weight="500">Edinburgh</text>
+                    </g>
+
+                    <!-- Glasgow (pink, major) -->
+                    <g class="city-group">
+                        <circle cx="164" cy="148" r="13" fill="url(#glowPink)" class="city-pulse" opacity="0.4"/>
+                        <circle cx="164" cy="148" r="4" fill="#e83e8c" class="city-dot"/>
+                        <circle cx="164" cy="148" r="2" fill="white"/>
+                        <text x="124" y="145" font-family="Poppins, sans-serif" font-size="8.5" fill="rgba(255,255,255,0.65)" font-weight="500">Glasgow</text>
+                    </g>
+
+                    <!-- Leeds (pink, regional) -->
+                    <g class="city-group">
+                        <circle cx="196" cy="218" r="10" fill="url(#glowPink)" class="city-pulse" opacity="0.35"/>
+                        <circle cx="196" cy="218" r="3.5" fill="#e83e8c" class="city-dot"/>
+                        <circle cx="196" cy="218" r="1.8" fill="white"/>
+                        <text x="202" y="221" font-family="Poppins, sans-serif" font-size="8" fill="rgba(255,255,255,0.55)">Leeds</text>
+                    </g>
+
+                    <!-- Liverpool (pink, regional) -->
+                    <g class="city-group">
+                        <circle cx="168" cy="238" r="10" fill="url(#glowPink)" class="city-pulse" opacity="0.35"/>
+                        <circle cx="168" cy="238" r="3.5" fill="#e83e8c" class="city-dot"/>
+                        <circle cx="168" cy="238" r="1.8" fill="white"/>
+                        <text x="144" y="249" font-family="Poppins, sans-serif" font-size="8" fill="rgba(255,255,255,0.55)">Liverpool</text>
+                    </g>
+
+                    <!-- Belfast (teal, regional) -->
+                    <g class="city-group">
+                        <circle cx="110" cy="186" r="10" fill="url(#glowTeal)" class="city-pulse" opacity="0.35"/>
+                        <circle cx="110" cy="186" r="3.5" fill="#00bcd4" class="city-dot"/>
+                        <circle cx="110" cy="186" r="1.8" fill="white"/>
+                        <text x="116" y="189" font-family="Poppins, sans-serif" font-size="8" fill="rgba(255,255,255,0.55)">Belfast</text>
+                    </g>
+
+                    <!-- Dublin (teal, regional) -->
+                    <g class="city-group">
+                        <circle cx="88" cy="230" r="10" fill="url(#glowTeal)" class="city-pulse" opacity="0.35"/>
+                        <circle cx="88" cy="230" r="3.5" fill="#00bcd4" class="city-dot"/>
+                        <circle cx="88" cy="230" r="1.8" fill="white"/>
+                        <text x="94" y="233" font-family="Poppins, sans-serif" font-size="8" fill="rgba(255,255,255,0.55)">Dublin</text>
+                    </g>
+
+                    <!-- Cardiff (pink, regional) -->
+                    <g class="city-group">
+                        <circle cx="154" cy="292" r="10" fill="url(#glowPink)" class="city-pulse" opacity="0.35"/>
+                        <circle cx="154" cy="292" r="3.5" fill="#e83e8c" class="city-dot"/>
+                        <circle cx="154" cy="292" r="1.8" fill="white"/>
+                        <text x="120" y="298" font-family="Poppins, sans-serif" font-size="8" fill="rgba(255,255,255,0.55)">Cardiff</text>
+                    </g>
+
+                    <!-- Faint connection lines between major cities -->
+                    <line x1="224" y1="300" x2="196" y2="264" stroke="rgba(0,188,212,0.12)" stroke-width="1" stroke-dasharray="3,4"/>
+                    <line x1="196" y1="264" x2="178" y2="230" stroke="rgba(0,188,212,0.1)" stroke-width="1" stroke-dasharray="3,4"/>
+                    <line x1="178" y1="230" x2="180" y2="158" stroke="rgba(232,62,140,0.1)" stroke-width="1" stroke-dasharray="3,4"/>
+                    <line x1="180" y1="158" x2="164" y2="148" stroke="rgba(232,62,140,0.1)" stroke-width="1" stroke-dasharray="3,4"/>
+                    <line x1="110" y1="186" x2="88" y2="230" stroke="rgba(0,188,212,0.08)" stroke-width="1" stroke-dasharray="3,4"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2026 ADVANTAGE -->
+<section id="advantage">
+    <div class="advantage-layout">
+        <div class="reveal">
+            <p class="section-label">The 2026 Advantage</p>
+            <h2 class="section-title">The big screen.<br><em>Finally accessible.</em></h2>
+            <div class="accent-bar"></div>
+            <p class="section-sub">TV advertising used to be exclusively for household-name brands with seven-figure media budgets. That era is over. Programmatic streaming has opened the door — and we know exactly how to get you through it.</p>
+        </div>
+        <div class="stat-stack reveal">
+            <div class="stat-row">
+                <div class="stat-icon si-teal">&#128200;</div>
+                <div class="stat-content">
+                    <h4>26 Million+ UK Viewers on Ad-Supported Streaming</h4>
+                    <p>In 2026, over 26 million UK viewers are watching on ad-supported streaming tiers — a captive audience your competitors may not yet be reaching.</p>
+                </div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-icon si-pink">&#127775;</div>
+                <div class="stat-content">
+                    <h4>Most Cost-Effective Route to the Big Screen</h4>
+                    <p>Streaming ad placements now offer broadcast-quality reach at a fraction of traditional TV rates — making this the smartest media investment available to growth-focused brands right now.</p>
+                </div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-icon si-dark">&#128274;</div>
+                <div class="stat-content">
+                    <h4>Non-Skippable, Premium Inventory</h4>
+                    <p>Unlike social media advertising, streaming ads are non-skippable and embedded within premium content — your audience watches your message in full, every single time.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTEXTUAL TARGETING -->
+<section id="targeting">
+    <div class="targeting-layout">
+        <div class="targeting-steps reveal">
+            <div class="targeting-step">
+                <span class="step-num">01</span>
+                <div class="step-content">
+                    <h3>Contextual Targeting</h3>
+                    <p>We use Contextual Targeting to place your ad alongside content that is directly relevant to your audience's interests and mindset at that moment. When the content and the ad are aligned, attention is higher, recall is stronger, and results follow.</p>
+                    <span class="example-tag">&#128210; E.g. Travel brand &#8594; nature documentary</span>
+                </div>
+            </div>
+            <div class="targeting-step">
+                <span class="step-num">02</span>
+                <div class="step-content">
+                    <h3>Improved Brand Recall</h3>
+                    <p>Research consistently shows that contextually matched advertising generates significantly higher brand recall than standard audience targeting alone. Your viewer is already in the right frame of mind — we simply ensure your brand is in the right place to meet them.</p>
+                </div>
+            </div>
+            <div class="targeting-step">
+                <span class="step-num">03</span>
+                <div class="step-content">
+                    <h3>Higher Engagement, Lower Waste</h3>
+                    <p>Contextual placement reduces wasted impressions and improves the efficiency of every pound you spend. You reach fewer of the wrong people and more of the right ones — which is precisely how strong campaigns are built.</p>
+                </div>
+            </div>
+        </div>
+        <div class="reveal">
+            <p class="section-label">Smart Placement</p>
+            <h2 class="section-title">The right ad,<br>in the right<br><em>moment.</em></h2>
+            <div class="accent-bar"></div>
+            <p class="section-sub">Most advertising interrupts. Contextually targeted advertising complements. We identify the content environments where your audience is most receptive, then secure placements that feel natural rather than disruptive — turning viewers into customers.</p>
+        </div>
+    </div>
+</section>
+
+<!-- NON-SKIP TRUST -->
+<section id="trust">
+    <div class="section-header reveal">
+        <p class="section-label">Why It Works</p>
+        <h2 class="section-title">High impact.<br><em>Unignorable.</em></h2>
+        <p class="section-sub">TV and streaming advertising carries a level of brand authority that no social media format can replicate. Appearing on the same screen as premium, professionally produced content tells your audience something important about who you are.</p>
+    </div>
+    <div class="trust-grid">
+        <div class="trust-card reveal">
+            <div class="trust-icon ti-teal">&#9940;</div>
+            <h3>Non-Skippable by Design</h3>
+            <p>Every viewer sees your ad in full. There is no scroll-past, no skip button, no competing notification. For the duration of your spot, you have their complete, undivided attention — which is a rare and valuable thing in modern advertising.</p>
+        </div>
+        <div class="trust-card reveal">
+            <div class="trust-icon ti-pink">&#127894;</div>
+            <h3>Builds Massive Brand Trust</h3>
+            <p>Audiences associate streaming and broadcast placements with established, credible brands. Appearing on Sky, Netflix, or Amazon Prime signals to your customers that you are a serious business — before they have even heard a word of your ad.</p>
+        </div>
+        <div class="trust-card reveal">
+            <div class="trust-icon ti-mix">&#127775;</div>
+            <h3>We Handle the Complexity</h3>
+            <p>Platform compliance, creative specifications, scheduling, targeting parameters, performance reporting — we manage all of it on your behalf. You tell us your goals; we build the campaign, place the ads, and report back with results that matter.</p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+    <div class="cta-inner reveal">
+        <p class="section-label">Ready to Begin?</p>
+        <h2 class="section-title">Get your brand<br>on the big screen</h2>
+        <p class="section-sub">Book a 15-minute discovery call and we'll map out exactly how TV and streaming advertising can work for your brand in 2026.</p>
+        <div class="cta-btns">
+            <a href="booking.html" class="btn-primary">Book a Discovery Call</a>
+            <a href="services-video.html" class="btn-outline">Explore Video Production</a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-top">
+        <div>
+            <div class="footer-brand">Click<span>Click</span></div>
+            <p class="footer-desc">Professional video marketing for brands that want to be remembered.</p>
+        </div>
+        <div class="footer-links-col">
+            <h4>Services</h4>
+            <a href="services-video.html">Video Production</a>
+            <a href="services-cgi-animation.html">CGI &amp; Animation</a>
+            <a href="services-tv.html">TV &amp; Streaming</a>
+            <a href="#">Paid Ad Creative</a>
+        </div>
+        <div class="footer-links-col">
+            <h4>Company</h4>
+            <a href="about.html">About Us</a>
+            <a href="academy.html">Academy</a>
+            <a href="booking.html">Book a Call</a>
+            <a href="#">Instagram</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p class="footer-copy">&#169; 2025 Clickclick Video Marketing Agency. All rights reserved.</p>
+        <div class="footer-accent-bar"></div>
+    </div>
+</footer>
+
+<script>
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 40);
+    });
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => entry.target.classList.add('visible'), i * 80);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
