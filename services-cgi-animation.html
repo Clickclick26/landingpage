@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGI & Animation | Clickclick</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FDF5E6;
+            --dark: #1a1a1a;
+            --mid: #555;
+            --light: #888;
+            --turquoise: #00bcd4;
+            --pink: #e83e8c;
+            --gradient: linear-gradient(to right, #00bcd4, #e83e8c);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--cream);
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 60px;
+            background: rgba(253,245,230,0.92);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            transition: padding 0.3s;
+        }
+        nav.scrolled { padding: 14px 60px; }
+
+        .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .nav-logo-img { width: 130px; height: 38px; object-fit: cover; object-position: center 8%; mix-blend-mode: multiply; }
+        .nav-logo-accent { display: flex; flex-direction: column; gap: 4px; }
+        .nav-logo-accent span { display: block; height: 2px; width: 20px; border-radius: 2px; }
+        .nav-logo-accent span:nth-child(1) { background: var(--turquoise); }
+        .nav-logo-accent span:nth-child(2) { background: var(--pink); }
+
+        .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; font-weight: 400; font-size: 0.88rem; letter-spacing: 0.5px; color: var(--mid); transition: color 0.2s; text-transform: uppercase; }
+        .nav-links a:hover { color: var(--dark); }
+        .nav-links a.active { color: var(--dark); font-weight: 600; }
+
+        .nav-dropdown { position: relative; }
+        .nav-dropdown > a { display: flex; align-items: center; gap: 5px; }
+        .nav-dropdown > a::after { content: ''; width: 5px; height: 5px; border-right: 1.5px solid var(--mid); border-bottom: 1.5px solid var(--mid); transform: rotate(45deg) translateY(-2px); display: inline-block; transition: transform 0.2s; }
+        .nav-dropdown:hover > a::after { transform: rotate(-135deg) translateY(-2px); }
+        .dropdown-menu { position: absolute; top: calc(100% + 16px); left: 50%; transform: translateX(-50%) translateY(-6px); background: rgba(253,245,230,0.98); backdrop-filter: blur(12px); border: 1px solid rgba(0,0,0,0.07); border-radius: 8px; padding: 10px 0; min-width: 200px; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+        .nav-dropdown:hover .dropdown-menu { opacity: 1; pointer-events: all; transform: translateX(-50%) translateY(0); }
+        .dropdown-menu a { display: block; padding: 10px 22px; font-size: 0.85rem; color: var(--mid) !important; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.15s, color 0.15s; }
+        .dropdown-menu a:hover { background: rgba(0,188,212,0.06); color: var(--dark) !important; }
+        .dropdown-menu a.active { color: var(--turquoise) !important; }
+
+        .nav-cta { background: var(--dark); color: var(--cream) !important; padding: 10px 24px; border-radius: 100px; font-weight: 600 !important; transition: opacity 0.2s !important; }
+        .nav-cta:hover { opacity: 0.8; color: var(--cream) !important; }
+
+        /* ── PAGE HERO ── */
+        #page-hero { padding: 160px 60px 100px; position: relative; overflow: hidden; }
+        .hero-bg-blob { position: absolute; width: 500px; height: 500px; border-radius: 50%; filter: blur(120px); opacity: 0.15; pointer-events: none; }
+        .blob-1 { background: #00bcd4; top: -80px; right: 0; }
+        .blob-2 { background: #e83e8c; bottom: -60px; left: -60px; }
+
+        .page-hero-inner { position: relative; z-index: 1; max-width: 760px; }
+        .page-hero-eyebrow { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; opacity: 0; animation: fadeUp 0.8s 0.2s forwards; }
+        .eyebrow-line { width: 40px; height: 2px; background: var(--gradient); }
+        .eyebrow-text { font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase; color: var(--light); }
+
+        .page-hero-title { font-family: 'DM Serif Display', serif; font-size: clamp(3rem, 6.5vw, 5.2rem); line-height: 1.0; letter-spacing: -2px; margin-bottom: 28px; opacity: 0; animation: fadeUp 0.9s 0.35s forwards; }
+        .page-hero-title em { font-style: italic; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .page-hero-sub { font-size: 1.1rem; font-weight: 300; color: var(--mid); line-height: 1.75; max-width: 520px; opacity: 0; animation: fadeUp 0.9s 0.5s forwards; }
+
+        /* ── SHARED SECTION ── */
+        section { padding: 100px 60px; }
+        .section-label { font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase; color: var(--light); margin-bottom: 12px; }
+        .section-title { font-family: 'DM Serif Display', serif; font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 1.1; letter-spacing: -1px; margin-bottom: 20px; }
+        .section-sub { font-weight: 300; color: var(--mid); font-size: 1.05rem; line-height: 1.7; max-width: 500px; }
+        .section-header { margin-bottom: 64px; }
+        .accent-bar { width: 60px; height: 3px; background: var(--gradient); margin: 24px 0; }
+
+        /* ── MARQUEE ── */
+        #social-proof { padding: 48px 0; border-top: 1px solid rgba(0,0,0,0.06); border-bottom: 1px solid rgba(0,0,0,0.06); overflow: hidden; background: var(--cream); }
+        .marquee-track { display: flex; animation: marquee 20s linear infinite; white-space: nowrap; }
+        .marquee-item { display: inline-flex; align-items: center; gap: 24px; padding: 0 48px; font-family: 'DM Serif Display', serif; font-size: 1.6rem; letter-spacing: -0.5px; color: var(--dark); opacity: 0.75; flex-shrink: 0; }
+        .marquee-dot { width: 6px; height: 6px; border-radius: 50%; background: linear-gradient(135deg, var(--turquoise), var(--pink)); flex-shrink: 0; }
+        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        /* ── FOOH SECTION ── */
+        #fooh { background: var(--dark); color: var(--cream); }
+        .fooh-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+        .fooh-left .section-label { color: rgba(253,245,230,0.4); }
+        .fooh-left .section-title { color: var(--cream); }
+        .fooh-left .section-sub { color: rgba(253,245,230,0.6); max-width: 460px; }
+
+        .fooh-stat-grid { display: flex; flex-direction: column; gap: 20px; }
+        .fooh-stat-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; padding: 28px 32px; transition: background 0.3s, border-color 0.3s; }
+        .fooh-stat-card:hover { background: rgba(255,255,255,0.07); border-color: rgba(0,188,212,0.25); }
+        .fooh-stat-num { font-family: 'DM Serif Display', serif; font-size: 2.8rem; letter-spacing: -2px; line-height: 1; margin-bottom: 8px; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .fooh-stat-label { font-weight: 600; font-size: 0.92rem; color: var(--cream); margin-bottom: 6px; }
+        .fooh-stat-desc { font-weight: 300; font-size: 0.85rem; color: rgba(253,245,230,0.5); line-height: 1.6; }
+
+        /* ── FOOH EXAMPLES ── */
+        #fooh-examples { background: #f5ede0; }
+        .examples-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+        .example-cards { display: flex; flex-direction: column; gap: 0; }
+        .example-card { padding: 36px 0; border-bottom: 1px solid rgba(0,0,0,0.08); display: flex; gap: 28px; align-items: flex-start; }
+        .example-card:first-child { border-top: 1px solid rgba(0,0,0,0.08); }
+        .example-num { font-family: 'DM Serif Display', serif; font-size: 2.6rem; line-height: 1; color: rgba(0,0,0,0.07); flex-shrink: 0; width: 52px; letter-spacing: -2px; }
+        .example-content h3 { font-family: 'DM Serif Display', serif; font-size: 1.35rem; margin-bottom: 8px; letter-spacing: -0.3px; }
+        .example-content p { font-weight: 300; color: var(--mid); font-size: 0.93rem; line-height: 1.7; }
+
+        /* ── 2D ANIMATION ── */
+        #animation-2d { background: var(--cream); }
+        .animation-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 64px; }
+        .anim-card { background: #fff; padding: 48px 40px; position: relative; overflow: hidden; transition: transform 0.3s; }
+        .anim-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gradient); transform: scaleX(0); transform-origin: left; transition: transform 0.35s ease; }
+        .anim-card:hover { transform: translateY(-4px); }
+        .anim-card:hover::after { transform: scaleX(1); }
+        .anim-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 28px; font-size: 1.4rem; }
+        .icon-teal { background: rgba(0,188,212,0.1); }
+        .icon-pink { background: rgba(232,62,140,0.1); }
+        .icon-mix { background: linear-gradient(135deg, rgba(0,188,212,0.1), rgba(232,62,140,0.1)); }
+        .anim-card h3 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; letter-spacing: -0.3px; margin-bottom: 14px; }
+        .anim-card p { font-weight: 300; color: var(--mid); font-size: 0.92rem; line-height: 1.7; }
+
+        /* ── CTA ── */
+        #cta { background: var(--cream); padding: 120px 60px; text-align: center; }
+        .cta-inner { max-width: 600px; margin: 0 auto; }
+        .cta-inner .section-sub { margin: 0 auto 48px; text-align: center; max-width: 440px; }
+        .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .btn-primary { background: var(--dark); color: var(--cream); padding: 16px 36px; border-radius: 100px; font-size: 0.9rem; font-weight: 600; text-decoration: none; letter-spacing: 0.3px; transition: transform 0.2s, opacity 0.2s; }
+        .btn-primary:hover { transform: translateY(-2px); opacity: 0.85; }
+        .btn-outline { border: 1.5px solid var(--dark); color: var(--dark); padding: 16px 36px; border-radius: 100px; font-size: 0.9rem; font-weight: 600; text-decoration: none; letter-spacing: 0.3px; transition: background 0.2s, color 0.2s, transform 0.2s; }
+        .btn-outline:hover { background: var(--dark); color: var(--cream); transform: translateY(-2px); }
+
+        /* ── FOOTER ── */
+        footer { background: var(--dark); color: var(--cream); padding: 60px 60px 40px; }
+        .footer-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 48px; flex-wrap: wrap; gap: 40px; }
+        .footer-brand { font-family: 'DM Serif Display', serif; font-size: 2rem; letter-spacing: -1px; }
+        .footer-brand span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .footer-desc { font-weight: 300; color: rgba(253,245,230,0.5); font-size: 0.9rem; margin-top: 10px; max-width: 260px; line-height: 1.6; }
+        .footer-links-col h4 { font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(253,245,230,0.4); margin-bottom: 20px; }
+        .footer-links-col a { display: block; font-weight: 300; font-size: 0.95rem; color: rgba(253,245,230,0.7); text-decoration: none; margin-bottom: 10px; transition: color 0.2s; }
+        .footer-links-col a:hover { color: var(--cream); }
+        .footer-bottom { border-top: 1px solid rgba(253,245,230,0.1); padding-top: 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .footer-copy { font-weight: 300; font-size: 0.82rem; color: rgba(253,245,230,0.35); }
+        .footer-accent-bar { width: 40px; height: 2px; background: var(--gradient); }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .reveal.visible { opacity: 1; transform: none; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            nav { padding: 18px 24px; }
+            .nav-links { display: none; }
+            section, #page-hero, #cta { padding: 72px 24px; }
+            .fooh-layout, .examples-layout { grid-template-columns: 1fr; gap: 48px; }
+            .animation-grid { grid-template-columns: 1fr; }
+            .ai-banner { flex-direction: column; gap: 28px; padding: 36px 28px; }
+            footer { padding: 48px 24px 32px; }
+            .footer-top { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+    <a href="home.html" class="nav-logo">
+        <img src="Final_Logo-01-01-1080x1080.png" class="nav-logo-img" alt="Clickclick">
+        <div class="nav-logo-accent">
+            <span></span>
+            <span></span>
+        </div>
+    </a>
+    <ul class="nav-links">
+        <li><a href="home.html">Home</a></li>
+        <li class="nav-dropdown">
+            <a href="#">Services</a>
+            <div class="dropdown-menu">
+                <a href="services-video.html">Video Production</a>
+                <a href="services-cgi-animation.html" class="active">CGI &amp; Animation</a>
+                <a href="#">Social Content</a>
+                <a href="#">Paid Ad Creative</a>
+            </div>
+        </li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="academy.html">Academy</a></li>
+        <li><a href="booking.html" class="nav-cta">Book a Call</a></li>
+    </ul>
+</nav>
+
+<!-- PAGE HERO -->
+<section id="page-hero">
+    <div class="hero-bg-blob blob-1"></div>
+    <div class="hero-bg-blob blob-2"></div>
+    <div class="page-hero-inner">
+        <div class="page-hero-eyebrow">
+            <div class="eyebrow-line"></div>
+            <span class="eyebrow-text">Our Services</span>
+        </div>
+        <h1 class="page-hero-title">CGI &amp;<br><em>Animation.</em></h1>
+        <p class="page-hero-sub">Stop your audience mid-scroll with visuals that feel impossible — then watch them share it. We create hyper-realistic CGI and animation that makes your brand impossible to ignore.</p>
+    </div>
+</section>
+
+<!-- MARQUEE -->
+<div id="social-proof">
+    <div class="marquee-track">
+        <span class="marquee-item">Oliver Bonas <span class="marquee-dot"></span></span>
+        <span class="marquee-item">L'Occitane <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Astrid &amp; Miyu <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Revolución de Cuba <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Oliver Bonas <span class="marquee-dot"></span></span>
+        <span class="marquee-item">L'Occitane <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Astrid &amp; Miyu <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Revolución de Cuba <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Oliver Bonas <span class="marquee-dot"></span></span>
+        <span class="marquee-item">L'Occitane <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Astrid &amp; Miyu <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Revolución de Cuba <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Oliver Bonas <span class="marquee-dot"></span></span>
+        <span class="marquee-item">L'Occitane <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Astrid &amp; Miyu <span class="marquee-dot"></span></span>
+        <span class="marquee-item">Revolución de Cuba <span class="marquee-dot"></span></span>
+    </div>
+</div>
+
+<!-- FOOH — HYPER-REALISTIC CGI -->
+<section id="fooh">
+    <div class="fooh-layout">
+        <div class="fooh-left reveal">
+            <p class="section-label">Fake Out of Home</p>
+            <h2 class="section-title" style="color:var(--cream)">The viral stunt<br>your brand<br><em style="font-style:italic; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">deserves.</em></h2>
+            <div class="accent-bar"></div>
+            <p class="section-sub">FOOH — Fake Out of Home — is the fastest-growing trend in brand marketing right now. We produce hyper-realistic CGI stunts that look as though your product has taken over a real-world landmark, city street, or iconic location. Your audience sees it, shares it, and talks about it — without you spending a fraction of a traditional outdoor campaign budget.</p>
+        </div>
+        <div class="fooh-stat-grid reveal">
+            <div class="fooh-stat-card">
+                <div class="fooh-stat-num">$11.1B</div>
+                <div class="fooh-stat-label">CGI Market Value in 2026</div>
+                <div class="fooh-stat-desc">The global CGI industry has never been more commercially powerful. Brands investing now are positioning themselves at the forefront of the next wave of visual culture.</div>
+            </div>
+            <div class="fooh-stat-card">
+                <div class="fooh-stat-num">#1</div>
+                <div class="fooh-stat-label">FOOH — The Leading Trend for Brand Growth</div>
+                <div class="fooh-stat-desc">From luxury fashion houses to challenger consumer brands, FOOH is the content format generating the highest organic reach and earned media of any visual format in 2026.</div>
+            </div>
+            <div class="fooh-stat-card">
+                <div class="fooh-stat-num">&#8734;</div>
+                <div class="fooh-stat-label">Reach Without Location Restrictions</div>
+                <div class="fooh-stat-desc">Unlike real outdoor advertising, FOOH has no geographic limit. One piece of content can appear to play out anywhere in the world — and be seen everywhere at once.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOH EXAMPLES -->
+<section id="fooh-examples">
+    <div class="examples-layout">
+        <div class="reveal">
+            <p class="section-label">What We Create</p>
+            <h2 class="section-title">The impossible,<br><em>made believable</em></h2>
+            <div class="accent-bar"></div>
+            <p class="section-sub">Our CGI team specialises in productions that blur the line between digital and physical reality — creating moments audiences genuinely cannot tell are not real.</p>
+        </div>
+        <div class="example-cards reveal">
+            <div class="example-card">
+                <span class="example-num">01</span>
+                <div class="example-content">
+                    <h3>Product Takeover Stunts</h3>
+                    <p>Your product — larger than life, dominating a famous city skyline, erupting from the ground, or flooding a street. We design the concept, build every frame, and deliver content ready for social.</p>
+                </div>
+            </div>
+            <div class="example-card">
+                <span class="example-num">02</span>
+                <div class="example-content">
+                    <h3>Hyper-Realistic Product Renders</h3>
+                    <p>Photorealistic 3D renders of your products in environments you could never physically film — zero logistics, zero location fees, and total creative control over every surface, shadow, and reflection.</p>
+                </div>
+            </div>
+            <div class="example-card">
+                <span class="example-num">03</span>
+                <div class="example-content">
+                    <h3>CGI Brand Worlds</h3>
+                    <p>Build an entire visual universe around your brand. Ideal for product launches, hero campaign assets, and immersive social content that gives your brand a distinctive, ownable aesthetic.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2D ANIMATION -->
+<section id="animation-2d">
+    <div class="section-header reveal">
+        <p class="section-label">2D Animation</p>
+        <h2 class="section-title">Clarity that<br><em>converts</em></h2>
+        <p class="section-sub">Sometimes the most powerful thing you can do for your audience is make something complicated feel effortlessly simple. That is exactly what our 2D animation work is built to do.</p>
+    </div>
+    <div class="animation-grid">
+        <div class="anim-card reveal">
+            <div class="anim-icon icon-teal">&#127775;</div>
+            <h3>Simplify Complex Messages</h3>
+            <p>Whether you are explaining a new product, a technical service, or a multi-step process, 2D animation strips away the noise and guides your viewer to the one thing you need them to understand — and remember.</p>
+        </div>
+        <div class="anim-card reveal">
+            <div class="anim-icon icon-pink">&#128161;</div>
+            <h3>Strengthen Brand Storytelling</h3>
+            <p>Animation gives you total control over how your brand looks, moves, and feels. We build visual languages that are entirely your own — consistent across every platform and every touchpoint your customer encounters.</p>
+        </div>
+        <div class="anim-card reveal">
+            <div class="anim-icon icon-mix">&#127919;</div>
+            <h3>Drive Action at Every Stage</h3>
+            <p>From top-of-funnel awareness films to mid-funnel explainers and bottom-of-funnel product demos, we tailor every animated piece to the specific decision your customer is being asked to make at that moment.</p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+    <div class="cta-inner reveal">
+        <p class="section-label">Ready to Begin?</p>
+        <h2 class="section-title">Let's build<br>something unforgettable</h2>
+        <p class="section-sub">Tell us about your brand, your audience, and what you want them to feel. We'll take it from there.</p>
+        <div class="cta-btns">
+            <a href="booking.html" class="btn-primary">Book a Discovery Call</a>
+            <a href="services-video.html" class="btn-outline">Explore Video Production</a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-top">
+        <div>
+            <div class="footer-brand">Click<span>Click</span></div>
+            <p class="footer-desc">Professional video marketing for brands that want to be remembered.</p>
+        </div>
+        <div class="footer-links-col">
+            <h4>Services</h4>
+            <a href="services-video.html">Video Production</a>
+            <a href="services-cgi-animation.html">CGI &amp; Animation</a>
+            <a href="#">Social Content</a>
+            <a href="#">Paid Ad Creative</a>
+        </div>
+        <div class="footer-links-col">
+            <h4>Company</h4>
+            <a href="about.html">About Us</a>
+            <a href="academy.html">Academy</a>
+            <a href="booking.html">Book a Call</a>
+            <a href="#">Instagram</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p class="footer-copy">&#169; 2025 Clickclick Video Marketing Agency. All rights reserved.</p>
+        <div class="footer-accent-bar"></div>
+    </div>
+</footer>
+
+<script>
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => entry.target.classList.add('visible'), i * 80);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
