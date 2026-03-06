@@ -108,8 +108,8 @@
 
         /* Map container */
         .map-wrap { position: relative; display: flex; align-items: center; justify-content: center; }
-        .map-svg-wrap { position: relative; width: 100%; max-width: 420px; }
-        .map-svg-wrap svg { width: 100%; height: auto; filter: drop-shadow(0 0 40px rgba(0,188,212,0.08)); }
+        .map-svg-wrap { position: relative; width: 100%; max-width: 520px; }
+        .map-svg-wrap svg { width: 100%; height: auto; filter: drop-shadow(0 0 60px rgba(0,188,212,0.18)); }
 
         /* Pulse rings on city dots */
         @keyframes pulse-ring {
@@ -166,10 +166,33 @@
         }
 
         /* Coverage stats bar */
-        .coverage-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 48px; background: rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden; }
-        .cov-stat { background: rgba(255,255,255,0.03); padding: 24px 20px; text-align: center; }
-        .cov-stat-num { font-family: 'DM Serif Display', serif; font-size: 1.8rem; letter-spacing: -1px; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; margin-bottom: 4px; }
-        .cov-stat-label { font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(253,245,230,0.35); }
+        .coverage-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 48px; }
+        .cov-stat { 
+            position: relative;
+            background: rgba(255,255,255,0.04); 
+            padding: 24px 20px; 
+            text-align: center; 
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.08);
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+        .cov-stat::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 100%, rgba(0,188,212,0.18) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .cov-stat:nth-child(2)::before {
+            background: radial-gradient(ellipse at 50% 100%, rgba(116,78,200,0.15) 0%, transparent 70%);
+        }
+        .cov-stat:nth-child(3)::before {
+            background: radial-gradient(ellipse at 50% 100%, rgba(232,62,140,0.18) 0%, transparent 70%);
+        }
+        .cov-stat:hover { border-color: rgba(0,188,212,0.3); }
+        .cov-stat-num { font-family: 'DM Serif Display', serif; font-size: 2rem; letter-spacing: -1px; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; margin-bottom: 6px; position: relative; z-index: 1; }
+        .cov-stat-label { font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(253,245,230,0.7); position: relative; z-index: 1; }
 
         @media (max-width: 900px) {
             #coverage { padding: 72px 24px; }
@@ -408,11 +431,11 @@
                             <stop offset="100%" stop-color="#1a1a2a"/>
                         </linearGradient>
                         <radialGradient id="glowTeal" cx="50%" cy="50%" r="50%">
-                            <stop offset="0%" stop-color="#00bcd4" stop-opacity="0.3"/>
+                            <stop offset="0%" stop-color="#00bcd4" stop-opacity="0.5"/>
                             <stop offset="100%" stop-color="#00bcd4" stop-opacity="0"/>
                         </radialGradient>
                         <radialGradient id="glowPink" cx="50%" cy="50%" r="50%">
-                            <stop offset="0%" stop-color="#e83e8c" stop-opacity="0.3"/>
+                            <stop offset="0%" stop-color="#e83e8c" stop-opacity="0.5"/>
                             <stop offset="100%" stop-color="#e83e8c" stop-opacity="0"/>
                         </radialGradient>
                         <filter id="blur4">
@@ -478,8 +501,8 @@
                     <ellipse cx="130" cy="208" rx="6" ry="9" fill="url(#landGrad)" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
 
                     <!-- Soft glow behind land masses -->
-                    <ellipse cx="190" cy="270" rx="80" ry="100" fill="url(#glowTeal)" filter="url(#blur4)" opacity="0.4"/>
-                    <ellipse cx="90" cy="230" rx="50" ry="60" fill="url(#glowPink)" filter="url(#blur4)" opacity="0.3"/>
+                    <ellipse cx="190" cy="270" rx="80" ry="100" fill="url(#glowTeal)" filter="url(#blur4)" opacity="0.6"/>
+                    <ellipse cx="90" cy="230" rx="50" ry="60" fill="url(#glowPink)" filter="url(#blur4)" opacity="0.5"/>
 
                     <!-- ══ CITY DOTS ══ -->
 
