@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Spend Benchmarker | Clickclick</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FDF5E6;
+            --dark: #1a1a1a;
+            --mid: #555;
+            --light: #888;
+            --turquoise: #00bcd4;
+            --pink: #e83e8c;
+            --gradient: linear-gradient(to right, #00bcd4, #e83e8c);
+            --ink: #0a0a0a;
+            --ink-2: #111111;
+            --ink-3: #181818;
+            --rule: rgba(255,255,255,0.07);
+            --text-dim: rgba(255,255,255,0.35);
+            --text-mid: rgba(255,255,255,0.6);
+            --text-bright: rgba(255,255,255,0.92);
+            --red: #e53e3e;
+            --yellow: #d4a017;
+            --green: #38a169;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background: var(--ink);
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-bright);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Grid texture overlay */
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+            background-size: 56px 56px;
+            pointer-events: none;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 60px;
+            background: rgba(10,10,10,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--rule);
+            transition: padding 0.3s;
+        }
+        nav.scrolled { padding: 14px 60px; }
+        .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .nav-logo-img { width: 130px; height: 38px; object-fit: cover; object-position: center 8%; }
+        .nav-logo-accent { display: flex; flex-direction: column; gap: 4px; }
+        .nav-logo-accent span { display: block; height: 2px; width: 20px; border-radius: 2px; }
+        .nav-logo-accent span:nth-child(1) { background: var(--turquoise); }
+        .nav-logo-accent span:nth-child(2) { background: var(--pink); }
+        .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; font-weight: 400; font-size: 0.82rem; letter-spacing: 0.5px; color: var(--text-dim); transition: color 0.2s; text-transform: uppercase; }
+        .nav-links a:hover { color: var(--text-bright); }
+        .nav-dropdown { position: relative; }
+        .nav-dropdown > a { display: flex; align-items: center; gap: 5px; }
+        .nav-dropdown > a::after { content: ''; width: 5px; height: 5px; border-right: 1.5px solid var(--text-dim); border-bottom: 1.5px solid var(--text-dim); transform: rotate(45deg) translateY(-2px); display: inline-block; }
+        .dropdown-menu { position: absolute; top: calc(100% + 16px); left: 50%; transform: translateX(-50%) translateY(-6px); background: rgba(18,18,18,0.98); backdrop-filter: blur(12px); border: 1px solid var(--rule); border-radius: 8px; padding: 10px 0; min-width: 230px; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; box-shadow: 0 16px 40px rgba(0,0,0,0.5); }
+        .nav-dropdown:hover .dropdown-menu { opacity: 1; pointer-events: all; transform: translateX(-50%) translateY(0); }
+        .dropdown-menu a { display: block; padding: 10px 22px; font-size: 0.82rem; color: var(--text-dim) !important; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.15s, color 0.15s; }
+        .dropdown-menu a:hover { background: rgba(255,255,255,0.04); color: var(--text-bright) !important; }
+        .dropdown-menu a.active { color: var(--turquoise) !important; }
+        .nav-cta { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: var(--text-bright) !important; padding: 9px 22px; border-radius: 100px; font-weight: 600 !important; font-size: 0.82rem !important; transition: background 0.2s !important; }
+        .nav-cta:hover { background: rgba(255,255,255,0.14) !important; }
+
+        /* ══════════════════════════
+           MAIN WRAPPER
+        ══════════════════════════ */
+        .page-wrap {
+            position: relative; z-index: 1;
+            min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 140px 24px 80px;
+        }
+
+        /* ══════════════════════════
+           INTRO SCREEN
+        ══════════════════════════ */
+        #screen-intro {
+            max-width: 680px; width: 100%;
+            text-align: center;
+            animation: fadeUp 0.8s 0.1s both;
+        }
+        .intro-eyebrow {
+            display: inline-flex; align-items: center; gap: 12px;
+            margin-bottom: 32px;
+            font-size: 0.65rem; letter-spacing: 5px; text-transform: uppercase;
+            color: var(--text-dim);
+        }
+        .eyebrow-pip { width: 24px; height: 1px; background: var(--gradient); }
+        .intro-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.4rem, 6vw, 4.2rem);
+            line-height: 1.0;
+            letter-spacing: -2px;
+            color: var(--text-bright);
+            margin-bottom: 24px;
+        }
+        .intro-title em {
+            font-style: italic;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .intro-sub {
+            font-weight: 300;
+            color: var(--text-mid);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 48px;
+        }
+
+        /* Stats row */
+        .intro-stats {
+            display: flex; justify-content: center; gap: 0;
+            border: 1px solid var(--rule);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 44px;
+        }
+        .intro-stat {
+            flex: 1;
+            padding: 20px 16px;
+            border-right: 1px solid var(--rule);
+            background: rgba(255,255,255,0.02);
+        }
+        .intro-stat:last-child { border-right: none; }
+        .is-num {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.8rem;
+            letter-spacing: -1px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .is-label { font-size: 0.68rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
+
+        .btn-start {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: linear-gradient(135deg, #00bcd4, #e83e8c);
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding: 16px 40px;
+            border-radius: 100px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 8px 32px rgba(232,62,140,0.25);
+            text-decoration: none;
+        }
+        .btn-start:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(232,62,140,0.35); }
+        .btn-start-arrow { font-size: 1.1rem; transition: transform 0.2s; }
+        .btn-start:hover .btn-start-arrow { transform: translateX(4px); }
+
+        .intro-note {
+            margin-top: 18px;
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+        }
+
+        /* ══════════════════════════
+           QUIZ SCREEN
+        ══════════════════════════ */
+        #screen-quiz {
+            max-width: 680px; width: 100%;
+            display: none;
+        }
+
+        /* Progress bar */
+        .quiz-progress-wrap {
+            margin-bottom: 48px;
+        }
+        .quiz-progress-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 10px;
+        }
+        .qph-label { font-size: 0.68rem; letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim); }
+        .qph-count { font-size: 0.68rem; letter-spacing: 2px; color: var(--text-dim); }
+        .quiz-progress-track {
+            height: 2px;
+            background: rgba(255,255,255,0.07);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .quiz-progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 2px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Question card */
+        .question-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--rule);
+            border-radius: 12px;
+            padding: 48px;
+            animation: fadeUp 0.5s both;
+        }
+        .q-step-label {
+            font-size: 0.65rem; letter-spacing: 4px; text-transform: uppercase;
+            color: var(--text-dim); margin-bottom: 16px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .q-step-line { flex: 1; height: 1px; background: var(--rule); }
+        .q-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+            color: var(--text-bright);
+            margin-bottom: 36px;
+        }
+        .q-title em {
+            font-style: italic;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Answer options */
+        .q-options { display: flex; flex-direction: column; gap: 12px; }
+        .q-option {
+            display: flex; align-items: center; gap: 18px;
+            padding: 18px 24px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s, transform 0.15s;
+            user-select: none;
+            position: relative;
+            overflow: hidden;
+        }
+        .q-option::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .q-option:hover { border-color: rgba(0,188,212,0.3); transform: translateX(4px); }
+        .q-option:hover::before { opacity: 0.04; }
+        .q-option.selected { border-color: rgba(0,188,212,0.5); background: rgba(0,188,212,0.06); transform: translateX(6px); }
+        .q-option.selected::before { opacity: 0.06; }
+
+        .opt-radio {
+            width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+            border: 1.5px solid rgba(255,255,255,0.15);
+            display: flex; align-items: center; justify-content: center;
+            position: relative; z-index: 1;
+            transition: border-color 0.2s;
+        }
+        .q-option.selected .opt-radio { border-color: var(--turquoise); }
+        .opt-radio-fill {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: var(--gradient);
+            opacity: 0;
+            transform: scale(0);
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .q-option.selected .opt-radio-fill { opacity: 1; transform: scale(1); }
+        .opt-label {
+            font-size: 0.95rem; font-weight: 300; color: var(--text-mid);
+            position: relative; z-index: 1;
+            transition: color 0.2s;
+        }
+        .q-option.selected .opt-label { color: var(--text-bright); }
+        .opt-pts {
+            margin-left: auto;
+            font-size: 0.68rem; letter-spacing: 1px;
+            color: var(--text-dim);
+            position: relative; z-index: 1;
+        }
+        .q-option.selected .opt-pts { color: var(--turquoise); }
+
+        /* Nav buttons */
+        .q-nav {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 32px;
+        }
+        .btn-back {
+            background: none; border: 1px solid var(--rule);
+            color: var(--text-dim); font-size: 0.82rem; font-weight: 400;
+            padding: 12px 24px; border-radius: 100px; cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+            font-family: 'Poppins', sans-serif;
+        }
+        .btn-back:hover { border-color: rgba(255,255,255,0.2); color: var(--text-mid); }
+        .btn-next {
+            background: linear-gradient(135deg, #00bcd4, #e83e8c);
+            color: white; font-size: 0.88rem; font-weight: 700;
+            padding: 14px 36px; border-radius: 100px; border: none;
+            cursor: pointer; font-family: 'Poppins', sans-serif;
+            transition: transform 0.2s, opacity 0.2s, box-shadow 0.2s;
+            box-shadow: 0 6px 24px rgba(232,62,140,0.2);
+            opacity: 0.4; pointer-events: none;
+            letter-spacing: 0.3px;
+        }
+        .btn-next.active { opacity: 1; pointer-events: all; }
+        .btn-next.active:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(232,62,140,0.35); }
+
+        /* ══════════════════════════
+           RESULTS SCREEN
+        ══════════════════════════ */
+        #screen-results {
+            max-width: 760px; width: 100%;
+            display: none;
+            text-align: center;
+        }
+
+        .results-eyebrow {
+            font-size: 0.65rem; letter-spacing: 5px; text-transform: uppercase;
+            color: var(--text-dim); margin-bottom: 24px;
+        }
+        .results-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            letter-spacing: -1px;
+            color: var(--text-bright);
+            margin-bottom: 8px;
+            line-height: 1.1;
+        }
+
+        /* ── GAUGE ── */
+        .gauge-wrap {
+            position: relative;
+            width: 300px; height: 160px;
+            margin: 40px auto 20px;
+        }
+        .gauge-svg { width: 100%; height: 100%; overflow: visible; }
+
+        /* Gauge track arc */
+        @keyframes gauge-reveal {
+            from { stroke-dashoffset: 471; }
+            to   { stroke-dashoffset: var(--gauge-target); }
+        }
+        .gauge-fill-arc {
+            fill: none;
+            stroke-width: 14;
+            stroke-linecap: round;
+            stroke-dasharray: 471;
+            stroke-dashoffset: 471;
+            animation: gauge-reveal 1.4s 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        /* Needle */
+        @keyframes needle-sweep {
+            from { transform: rotate(var(--needle-start)); }
+            to   { transform: rotate(var(--needle-end)); }
+        }
+        .gauge-needle {
+            transform-origin: 150px 150px;
+            animation: needle-sweep 1.4s 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        /* Score number */
+        @keyframes count-up {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .gauge-score-num {
+            animation: count-up 0.6s 1.2s both;
+        }
+
+        /* Score zone labels */
+        .gauge-labels {
+            display: flex; justify-content: space-between;
+            width: 300px; margin: 0 auto;
+            padding: 0 8px;
+        }
+        .gl { font-size: 0.62rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); }
+
+        /* Score badge */
+        .score-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            margin: 28px auto 0;
+            padding: 8px 20px;
+            border-radius: 100px;
+            font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+            border: 1px solid;
+        }
+        .badge-red   { background: rgba(229,62,62,0.1);   border-color: rgba(229,62,62,0.3);   color: #fc8181; }
+        .badge-yellow{ background: rgba(212,160,23,0.1);  border-color: rgba(212,160,23,0.3);  color: #f6c343; }
+        .badge-green { background: rgba(56,161,105,0.1);  border-color: rgba(56,161,105,0.3);  color: #68d391; }
+        .badge-dot { width: 7px; height: 7px; border-radius: 50%; }
+        .badge-dot-red    { background: #fc8181; box-shadow: 0 0 6px rgba(229,62,62,0.8); }
+        .badge-dot-yellow { background: #f6c343; box-shadow: 0 0 6px rgba(212,160,23,0.8); }
+        .badge-dot-green  { background: #68d391; box-shadow: 0 0 6px rgba(56,161,105,0.8); }
+
+        /* Result copy */
+        .result-headline {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+            line-height: 1.15;
+            letter-spacing: -0.5px;
+            color: var(--text-bright);
+            margin: 28px auto 0;
+            max-width: 600px;
+        }
+        .result-body {
+            font-size: 1rem; font-weight: 300; color: var(--text-mid);
+            line-height: 1.8; margin: 16px auto 0;
+            max-width: 540px;
+        }
+
+        /* Gap meter */
+        .gap-meter {
+            margin: 36px auto 0;
+            max-width: 540px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--rule);
+            border-radius: 10px;
+            padding: 28px 32px;
+            text-align: left;
+        }
+        .gm-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
+        }
+        .gm-title { font-size: 0.68rem; letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim); }
+        .gm-vs { font-size: 0.68rem; color: var(--text-dim); }
+        .gm-track { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; position: relative; }
+        .gm-user-bar {
+            height: 100%; border-radius: 3px;
+            background: var(--gradient);
+            transition: width 1.2s 0.5s cubic-bezier(0.4,0,0.2,1);
+        }
+        .gm-leader-line {
+            position: absolute; top: -4px; bottom: -4px;
+            width: 2px; background: rgba(255,255,255,0.25);
+            border-radius: 1px;
+            left: 100%;
+        }
+        .gm-footer {
+            display: flex; justify-content: space-between; margin-top: 10px;
+        }
+        .gm-f-label { font-size: 0.72rem; color: var(--text-dim); }
+        .gm-f-score { font-size: 0.72rem; font-weight: 600; color: var(--text-bright); }
+
+        /* CTA block */
+        .result-cta-block {
+            margin-top: 40px;
+            padding: 40px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--rule);
+            border-radius: 12px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .result-cta-block::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: var(--gradient);
+        }
+        .cta-urgency {
+            font-size: 0.68rem; letter-spacing: 4px; text-transform: uppercase;
+            color: var(--text-dim); margin-bottom: 12px;
+        }
+        .cta-headline {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(1.3rem, 3vw, 1.9rem);
+            letter-spacing: -0.5px;
+            color: var(--text-bright);
+            margin-bottom: 24px;
+            line-height: 1.2;
+        }
+        .cta-headline em {
+            font-style: italic;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .btn-cta {
+            display: inline-flex; align-items: center; gap: 12px;
+            background: linear-gradient(135deg, #00bcd4, #e83e8c);
+            color: white;
+            font-size: 0.92rem; font-weight: 700;
+            padding: 18px 44px;
+            border-radius: 100px; border: none;
+            cursor: pointer; text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 8px 36px rgba(232,62,140,0.3);
+            letter-spacing: 0.3px;
+            font-family: 'Poppins', sans-serif;
+        }
+        .btn-cta:hover { transform: translateY(-3px); box-shadow: 0 14px 48px rgba(232,62,140,0.45); }
+        .btn-restart {
+            display: block; margin: 16px auto 0;
+            background: none; border: none;
+            font-size: 0.78rem; color: var(--text-dim);
+            cursor: pointer; font-family: 'Poppins', sans-serif;
+            transition: color 0.2s;
+            text-decoration: underline; text-underline-offset: 3px;
+        }
+        .btn-restart:hover { color: var(--text-mid); }
+
+        /* Breakdown */
+        .result-breakdown {
+            margin-top: 36px;
+            border: 1px solid var(--rule);
+            border-radius: 10px;
+            overflow: hidden;
+            text-align: left;
+        }
+        .rb-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--rule);
+            font-size: 0.65rem; letter-spacing: 4px; text-transform: uppercase;
+            color: var(--text-dim);
+        }
+        .rb-row {
+            display: flex; align-items: center; gap: 16px;
+            padding: 14px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            background: rgba(255,255,255,0.01);
+            transition: background 0.2s;
+        }
+        .rb-row:last-child { border-bottom: none; }
+        .rb-row:hover { background: rgba(255,255,255,0.025); }
+        .rb-q { font-size: 0.78rem; font-weight: 300; color: var(--text-mid); flex: 1; }
+        .rb-a { font-size: 0.78rem; font-weight: 400; color: var(--text-bright); max-width: 200px; text-align: right; }
+        .rb-pts {
+            font-size: 0.72rem; font-weight: 700;
+            min-width: 48px; text-align: right;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── FOOTER ── */
+        .tool-footer {
+            position: relative; z-index: 1;
+            text-align: center;
+            padding: 32px 24px 48px;
+            font-size: 0.72rem; color: var(--text-dim);
+            letter-spacing: 1px;
+        }
+        .tool-footer a { color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+        .tool-footer a:hover { color: var(--text-mid); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 700px) {
+            nav { padding: 16px 20px; }
+            .nav-links { display: none; }
+            .page-wrap { padding: 100px 16px 60px; }
+            .question-card { padding: 28px 20px; }
+            .intro-stats { flex-direction: column; }
+            .intro-stat { border-right: none; border-bottom: 1px solid var(--rule); }
+            .intro-stat:last-child { border-bottom: none; }
+            .gap-meter { padding: 20px; }
+            .result-cta-block { padding: 28px 20px; }
+            .gauge-wrap { width: 240px; height: 130px; }
+            .gauge-labels { width: 240px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+    <a href="home.html" class="nav-logo">
+        <img src="Final_Logo-01-01-1080x1080.png" class="nav-logo-img" alt="Clickclick">
+        <div class="nav-logo-accent"><span></span><span></span></div>
+    </a>
+    <ul class="nav-links">
+        <li><a href="home.html">Home</a></li>
+        <li class="nav-dropdown">
+            <a href="#">Services</a>
+            <div class="dropdown-menu">
+                <a href="services-video.html">Video Production</a>
+                <a href="services-cgi-animation.html">CGI &amp; Animation</a>
+                <a href="services-tv.html">TV &amp; Streaming</a>
+                <a href="services-live-commerce.html">Live Commerce</a>
+                <a href="services-funnels.html">Conversion Funnels</a>
+            </div>
+        </li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="academy.html">Academy</a></li>
+        <li><a href="booking.html" class="nav-cta">Book a Call</a></li>
+    </ul>
+</nav>
+
+<div class="page-wrap">
+
+    <!-- ══ INTRO ══ -->
+    <div id="screen-intro">
+        <div class="intro-eyebrow">
+            <div class="eyebrow-pip"></div>
+            Free Benchmarking Tool
+            <div class="eyebrow-pip"></div>
+        </div>
+        <h1 class="intro-title">Video Spend<br><em>Benchmarker</em></h1>
+        <p class="intro-sub">Five questions. Thirty seconds. Find out exactly how your video marketing investment stacks up against your industry competitors — and where you're bleeding market share right now.</p>
+        <div class="intro-stats">
+            <div class="intro-stat">
+                <span class="is-num">40</span>
+                <span class="is-label">Industry Leader Score</span>
+            </div>
+            <div class="intro-stat">
+                <span class="is-num">5</span>
+                <span class="is-label">Questions</span>
+            </div>
+            <div class="intro-stat">
+                <span class="is-num">30s</span>
+                <span class="is-label">To Complete</span>
+            </div>
+        </div>
+        <button class="btn-start" onclick="startQuiz()">
+            Run My Benchmark <span class="btn-start-arrow">→</span>
+        </button>
+        <p class="intro-note">No email required &nbsp;·&nbsp; Instant results</p>
+    </div>
+
+    <!-- ══ QUIZ ══ -->
+    <div id="screen-quiz">
+        <div class="quiz-progress-wrap">
+            <div class="quiz-progress-header">
+                <span class="qph-label">Competitor Gap Analysis</span>
+                <span class="qph-count" id="progress-count">1 of 5</span>
+            </div>
+            <div class="quiz-progress-track">
+                <div class="quiz-progress-fill" id="progress-fill" style="width:0%"></div>
+            </div>
+        </div>
+        <div id="question-area"></div>
+    </div>
+
+    <!-- ══ RESULTS ══ -->
+    <div id="screen-results">
+        <p class="results-eyebrow">Your Competitor Gap Score</p>
+        <h2 class="results-title" id="result-title">—</h2>
+
+        <!-- Gauge -->
+        <div class="gauge-wrap">
+            <svg class="gauge-svg" viewBox="0 0 300 160">
+                <defs>
+                    <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%"   stop-color="#e53e3e"/>
+                        <stop offset="45%"  stop-color="#d4a017"/>
+                        <stop offset="100%" stop-color="#38a169"/>
+                    </linearGradient>
+                    <linearGradient id="needleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="rgba(255,255,255,0.9)"/>
+                        <stop offset="100%" stop-color="rgba(255,255,255,0.2)"/>
+                    </linearGradient>
+                </defs>
+                <!-- Track -->
+                <path d="M 30 150 A 120 120 0 0 1 270 150"
+                      fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="14" stroke-linecap="round"/>
+                <!-- Coloured fill arc -->
+                <path id="gauge-arc"
+                      d="M 30 150 A 120 120 0 0 1 270 150"
+                      fill="none" stroke="url(#gaugeGrad)" stroke-width="14" stroke-linecap="round"
+                      class="gauge-fill-arc"
+                      style="--gauge-target: 471;"/>
+                <!-- Score text -->
+                <text id="gauge-score-text" x="150" y="128" text-anchor="middle"
+                      font-family="'DM Serif Display', serif" font-size="42"
+                      fill="white" class="gauge-score-num">0</text>
+                <text x="150" y="148" text-anchor="middle"
+                      font-family="Poppins, sans-serif" font-size="10"
+                      fill="rgba(255,255,255,0.3)" letter-spacing="3">OUT OF 40</text>
+                <!-- Needle -->
+                <g id="gauge-needle" class="gauge-needle"
+                   style="--needle-start: rotate(-90deg); --needle-end: rotate(-90deg);">
+                    <rect x="148" y="60" width="4" height="88" rx="2" fill="url(#needleGrad)"/>
+                    <circle cx="150" cy="150" r="7" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+                </g>
+            </svg>
+        </div>
+        <div class="gauge-labels">
+            <span class="gl" style="color:rgba(229,62,62,0.6)">0</span>
+            <span class="gl" style="color:rgba(212,160,23,0.6)">20</span>
+            <span class="gl" style="color:rgba(56,161,105,0.6)">35</span>
+            <span class="gl" style="color:rgba(56,161,105,0.6)">40</span>
+        </div>
+
+        <div id="score-badge-wrap" style="margin-top:20px;"></div>
+        <h3 class="result-headline" id="result-headline">—</h3>
+        <p class="result-body" id="result-body">—</p>
+
+        <!-- Gap meter vs industry leader -->
+        <div class="gap-meter">
+            <div class="gm-header">
+                <span class="gm-title">Competitor Gap Analysis</span>
+                <span class="gm-vs">vs Industry Leader (40)</span>
+            </div>
+            <div class="gm-track">
+                <div class="gm-user-bar" id="gm-user-bar" style="width:0%"></div>
+                <div class="gm-leader-line"></div>
+            </div>
+            <div class="gm-footer">
+                <span class="gm-f-label">Your score</span>
+                <span class="gm-f-score" id="gm-score-label">—</span>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="result-cta-block">
+            <p class="cta-urgency">Your next step</p>
+            <h3 class="cta-headline">Book a Strategy Session<br>to <em>Close Your Competitor Gap</em></h3>
+            <a href="booking.html" class="btn-cta">
+                Book Your Strategy Session &nbsp;→
+            </a>
+            <button class="btn-restart" onclick="restartQuiz()">Retake the benchmarker</button>
+        </div>
+
+        <!-- Answer breakdown -->
+        <div class="result-breakdown">
+            <div class="rb-header">Your Answers &amp; Score Breakdown</div>
+            <div id="breakdown-rows"></div>
+        </div>
+
+    </div>
+</div>
+
+<div class="tool-footer">
+    <a href="home.html">← Back to Clickclick</a> &nbsp;·&nbsp; © 2025 Clickclick Video Marketing Agency
+</div>
+
+<script>
+    /* ══════════════════════════════════════
+       DATA
+    ══════════════════════════════════════ */
+    const INDUSTRY_LEADER = 40;
+
+    const questions = [
+        {
+            id: 'industry',
+            label: 'Question 01',
+            title: 'What industry are you <em>operating in?</em>',
+            options: [
+                { label: 'SaaS / Technology',       pts: 8 },
+                { label: 'E-Commerce',               pts: 10 },
+                { label: 'Professional Services',    pts: 7 },
+                { label: 'Real Estate',              pts: 6 },
+            ]
+        },
+        {
+            id: 'output',
+            label: 'Question 02',
+            title: 'How many professional videos did you post in the <em>last 90 days?</em>',
+            options: [
+                { label: 'None at all',   pts: 1 },
+                { label: '1–3 videos',    pts: 4 },
+                { label: '4–10 videos',   pts: 7 },
+                { label: '10+ videos',    pts: 10 },
+            ]
+        },
+        {
+            id: 'competitors',
+            label: 'Question 03',
+            title: 'Are your top 3 rivals running <em>video ads on social media?</em>',
+            options: [
+                { label: 'Yes — heavily',       pts: 1 },
+                { label: 'Not sure',            pts: 5 },
+                { label: 'No — not that I see', pts: 10 },
+            ]
+        },
+        {
+            id: 'strategy',
+            label: 'Question 04',
+            title: 'Do you have a <em>documented video content calendar?</em>',
+            options: [
+                { label: 'Yes — planned and scheduled', pts: 10 },
+                { label: 'No — we post ad hoc',        pts: 4 },
+                { label: 'We wing it entirely',        pts: 1 },
+            ]
+        },
+        {
+            id: 'goal',
+            label: 'Question 05',
+            title: 'What is your <em>primary growth target</em> right now?',
+            options: [
+                { label: 'Brand Awareness', pts: 6  },
+                { label: 'Direct Sales',    pts: 10 },
+                { label: 'Hiring / Talent', pts: 5  },
+            ]
+        }
+    ];
+
+    /* ══════════════════════════════════════
+       STATE
+    ══════════════════════════════════════ */
+    let currentQ = 0;
+    let answers  = []; // { questionIndex, optionIndex, pts, label, q }
+
+    /* ══════════════════════════════════════
+       NAV SCROLL
+    ══════════════════════════════════════ */
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    /* ══════════════════════════════════════
+       SCREEN TRANSITIONS
+    ══════════════════════════════════════ */
+    function showScreen(id) {
+        ['screen-intro','screen-quiz','screen-results'].forEach(s => {
+            const el = document.getElementById(s);
+            el.style.display = 'none';
+            el.style.animation = '';
+        });
+        const target = document.getElementById(id);
+        target.style.display = 'block';
+        target.style.animation = 'fadeUp 0.5s both';
+    }
+
+    /* ══════════════════════════════════════
+       START
+    ══════════════════════════════════════ */
+    function startQuiz() {
+        currentQ = 0;
+        answers  = [];
+        showScreen('screen-quiz');
+        renderQuestion();
+    }
+
+    /* ══════════════════════════════════════
+       RENDER QUESTION
+    ══════════════════════════════════════ */
+    function renderQuestion() {
+        const q   = questions[currentQ];
+        const pct = (currentQ / questions.length) * 100;
+        document.getElementById('progress-fill').style.width = pct + '%';
+        document.getElementById('progress-count').textContent = (currentQ+1) + ' of ' + questions.length;
+
+        const saved = answers.find(a => a.questionIndex === currentQ);
+
+        const html = `
+        <div class="question-card" style="animation-delay:0.05s">
+            <div class="q-step-label">
+                ${q.label} <div class="q-step-line"></div>
+            </div>
+            <h2 class="q-title">${q.title}</h2>
+            <div class="q-options">
+                ${q.options.map((opt, i) => `
+                <div class="q-option${saved && saved.optionIndex === i ? ' selected' : ''}"
+                     onclick="selectOption(${i})" data-idx="${i}">
+                    <div class="opt-radio">
+                        <div class="opt-radio-fill"></div>
+                    </div>
+                    <span class="opt-label">${opt.label}</span>
+                    <span class="opt-pts">${opt.pts} pts</span>
+                </div>`).join('')}
+            </div>
+            <div class="q-nav">
+                <button class="btn-back" onclick="goBack()" ${currentQ === 0 ? 'style="visibility:hidden"' : ''}>← Back</button>
+                <button class="btn-next${saved ? ' active' : ''}" id="btn-next" onclick="goNext()">
+                    ${currentQ === questions.length - 1 ? 'See My Results →' : 'Next Question →'}
+                </button>
+            </div>
+        </div>`;
+        document.getElementById('question-area').innerHTML = html;
+    }
+
+    /* ══════════════════════════════════════
+       OPTION SELECTION
+    ══════════════════════════════════════ */
+    function selectOption(idx) {
+        document.querySelectorAll('.q-option').forEach(el => el.classList.remove('selected'));
+        document.querySelector(`.q-option[data-idx="${idx}"]`).classList.add('selected');
+        document.getElementById('btn-next').classList.add('active');
+
+        const q   = questions[currentQ];
+        const opt = q.options[idx];
+        const existing = answers.findIndex(a => a.questionIndex === currentQ);
+        const record = { questionIndex: currentQ, optionIndex: idx, pts: opt.pts, label: opt.label, q: q.title.replace(/<[^>]+>/g,'') };
+        if (existing >= 0) answers[existing] = record;
+        else               answers.push(record);
+    }
+
+    /* ══════════════════════════════════════
+       NAVIGATION
+    ══════════════════════════════════════ */
+    function goNext() {
+        if (!answers.find(a => a.questionIndex === currentQ)) return;
+        currentQ++;
+        if (currentQ >= questions.length) { showResults(); return; }
+        renderQuestion();
+    }
+    function goBack() {
+        if (currentQ > 0) { currentQ--; renderQuestion(); }
+    }
+    function restartQuiz() {
+        currentQ = 0; answers = [];
+        showScreen('screen-intro');
+    }
+
+    /* ══════════════════════════════════════
+       RESULTS
+    ══════════════════════════════════════ */
+    function showResults() {
+        const total = answers.reduce((sum, a) => sum + a.pts, 0);
+        const gap   = INDUSTRY_LEADER - total;
+
+        // Zone
+        let zone, badgeClass, dotClass, resultTitle, headline, body;
+        if (total < 20) {
+            zone        = 'HIGH RISK';
+            badgeClass  = 'badge-red';
+            dotClass    = 'badge-dot-red';
+            resultTitle = 'High Risk. You Are Losing Ground.';
+            headline    = 'Your competitors are capturing 80% more attention than you right now.';
+            body        = 'You are losing market share every day you delay. Without a consistent, professional video presence, your audience is gravitating toward brands who show up — and right now, that isn\'t you. Every day without video is a day your competitors own more of your customer\'s mind.';
+        } else if (total < 35) {
+            zone        = 'MAINTAINING';
+            badgeClass  = 'badge-yellow';
+            dotClass    = 'badge-dot-yellow';
+            resultTitle = 'Maintaining. But Not Standing Out.';
+            headline    = 'You are keeping up, but your brand is invisible to 50% of your target audience.';
+            body        = 'You have the foundations, but you are not making a distinctive impression. The brands who will take market share in the next 12 months are the ones investing now in quality, consistency, and strategy — not just occasional output. There is a real gap between where you are and where the category leaders operate.';
+        } else {
+            zone        = 'COMPETITIVE';
+            badgeClass  = 'badge-green';
+            dotClass    = 'badge-dot-green';
+            resultTitle = 'Competitive. Now Accelerate.';
+            headline    = 'You are ahead of most of your competitors. Here is how to extend that lead.';
+            body        = 'Your video strategy is stronger than the majority of brands in your space. The opportunity now is to sharpen your system — improve production quality, tighten your funnel, and leverage your content more strategically across paid and organic channels. A session with our team will show you exactly where the highest-value gains are hiding.';
+        }
+
+        // Gauge arc: 471 = full arc path length. dashoffset = 471 - (score/40 * 471)
+        const arcOffset = 471 - (total / 40) * 471;
+        // Needle: -90deg = fully left (score 0), +90deg = fully right (score 40)
+        const needleDeg = -90 + (total / 40) * 180;
+
+        document.getElementById('result-title').textContent = 'Score: ' + total + ' / 40';
+
+        // Set gauge arc
+        const arc = document.getElementById('gauge-arc');
+        arc.style.setProperty('--gauge-target', arcOffset);
+
+        // Set needle
+        const needle = document.getElementById('gauge-needle');
+        needle.style.setProperty('--needle-start', 'rotate(-90deg)');
+        needle.style.setProperty('--needle-end', 'rotate(' + needleDeg + 'deg)');
+
+        // Animate score number
+        const scoreText = document.getElementById('gauge-score-text');
+        scoreText.textContent = '0';
+        let count = 0;
+        const interval = setInterval(() => {
+            count += Math.ceil(total / 30);
+            if (count >= total) { count = total; clearInterval(interval); }
+            scoreText.textContent = count;
+        }, 40);
+
+        // Badge
+        document.getElementById('score-badge-wrap').innerHTML = `
+            <div class="score-badge ${badgeClass}">
+                <div class="badge-dot ${dotClass}"></div>
+                ${zone}
+            </div>`;
+
+        document.getElementById('result-headline').textContent = headline;
+        document.getElementById('result-body').textContent = body;
+
+        // Gap meter
+        const pct = Math.min((total / 40) * 100, 100);
+        setTimeout(() => {
+            document.getElementById('gm-user-bar').style.width = pct + '%';
+        }, 300);
+        document.getElementById('gm-score-label').textContent = total + ' / ' + INDUSTRY_LEADER + ' (gap: ' + gap + ' pts)';
+
+        // Breakdown
+        const rows = answers.map(a => `
+            <div class="rb-row">
+                <span class="rb-q">${a.q}</span>
+                <span class="rb-a">${a.label}</span>
+                <span class="rb-pts">+${a.pts}</span>
+            </div>`).join('');
+        document.getElementById('breakdown-rows').innerHTML = rows;
+
+        showScreen('screen-results');
+
+        // Scroll to top of results
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>
