@@ -6,54 +6,290 @@
     <title>Click Click | Video Marketing Agency</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            background-color: #FDF5E6; /* Professional Cream */
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background-color: #FDF5E6;
             height: 100vh;
             font-family: 'Poppins', sans-serif;
             color: #1a1a1a;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
+
         .container {
             max-width: 600px;
             padding: 40px;
             text-align: center;
+            position: relative;
+            z-index: 10;
         }
+
         .logo {
             width: 250px;
-            /* This removes the white background from your logo file */
-            mix-blend-mode: multiply; 
+            mix-blend-mode: multiply;
             margin-bottom: 30px;
         }
+
         h1 {
             font-weight: 600;
             letter-spacing: -1px;
             font-size: 2.2rem;
             margin-bottom: 10px;
         }
+
         .accent-bar {
             width: 60px;
             height: 3px;
-            background: linear-gradient(to right, #00bcd4, #e83e8c); /* Turquoise to Pink */
+            background: linear-gradient(to right, #00bcd4, #e83e8c);
             margin: 20px auto;
         }
+
         p {
             font-weight: 300;
             color: #555;
             font-size: 1.1rem;
             letter-spacing: 0.5px;
         }
+
+        .contact {
+            font-weight: 300;
+            color: #555;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            margin-top: 30px;
+        }
+
+        .contact a { color: #00bcd4; text-decoration: none; }
+        .contact a:hover { color: #e83e8c; }
+
+        /* Road — unchanged */
+        .road {
+            position: fixed;
+            bottom: 28px;
+            left: 0;
+            width: 100%;
+            height: 1.5px;
+            background: linear-gradient(to right, #00bcd4, #e83e8c, #00bcd4);
+            opacity: 0.55;
+            z-index: 5;
+        }
+
+        /* Truck */
+        .truck-wrap {
+            position: fixed;
+            bottom: 29px;
+            left: -220px;
+            z-index: 6;
+            animation: drive 12s linear infinite;
+            filter: drop-shadow(0 2px 6px rgba(0,188,212,0.15));
+        }
+
+        @keyframes drive {
+            0%   { left: -220px; transform: scaleX(1); }
+            44%  { left: calc(100vw + 30px); transform: scaleX(1); }
+            45%  { left: calc(100vw + 30px); transform: scaleX(-1); }
+            94%  { left: -220px; transform: scaleX(-1); }
+            95%  { left: -220px; transform: scaleX(1); }
+            100% { left: -220px; transform: scaleX(1); }
+        }
+
+        .truck-svg {
+            animation: bounce 0.35s ease-in-out infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0px); }
+            to   { transform: translateY(-2px); }
+        }
+
+        .crane-arm {
+            transform-origin: 116px 30px;
+            animation: swing 5s ease-in-out infinite alternate;
+        }
+
+        @keyframes swing {
+            from { transform: rotate(-3deg); }
+            to   { transform: rotate(3deg); }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <img src="Final.Logo-01-01-1080x1080.png" class="logo" alt="Click Click">
-        <div class="accent-bar"></div>
-        <h1>Coming Soon</h1>
-        <p>Our website is currently being refreshed.
-Our operations continue smoothly as usual while we support our clients.</p>
-    </div>
+
+<div class="road"></div>
+
+<div class="truck-wrap">
+<svg class="truck-svg" width="200" height="72" viewBox="0 0 200 72" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#00bcd4"/>
+      <stop offset="100%" stop-color="#e83e8c"/>
+    </linearGradient>
+    <linearGradient id="lgV" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#00bcd4"/>
+      <stop offset="100%" stop-color="#e83e8c"/>
+    </linearGradient>
+    <linearGradient id="lgD" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#00bcd4"/>
+      <stop offset="100%" stop-color="#e83e8c"/>
+    </linearGradient>
+    <linearGradient id="fillBed" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#00bcd4" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#e83e8c" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="fillCab" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#e83e8c" stop-opacity="0.13"/>
+      <stop offset="100%" stop-color="#c2185b" stop-opacity="0.18"/>
+    </linearGradient>
+    <linearGradient id="fillW" x1="20%" y1="20%" x2="80%" y2="80%">
+      <stop offset="0%"   stop-color="#00bcd4" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#e83e8c" stop-opacity="0.1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Chassis -->
+  <rect x="10" y="48" width="178" height="5" rx="2.5"
+        fill="url(#fillBed)" stroke="url(#lg)" stroke-width="1.6"/>
+
+  <!-- Bed -->
+  <rect x="10" y="30" width="130" height="20" rx="2"
+        fill="url(#fillBed)" stroke="url(#lg)" stroke-width="1.6"/>
+  <!-- Bed ribs -->
+  <line x1="42"  y1="30" x2="42"  y2="50" stroke="url(#lg)" stroke-width="0.8" opacity="0.3"/>
+  <line x1="74"  y1="30" x2="74"  y2="50" stroke="url(#lg)" stroke-width="0.8" opacity="0.3"/>
+  <line x1="106" y1="30" x2="106" y2="50" stroke="url(#lg)" stroke-width="0.8" opacity="0.3"/>
+
+  <!-- Crane turret -->
+  <rect x="96" y="22" width="34" height="10" rx="2"
+        fill="url(#fillBed)" stroke="url(#lg)" stroke-width="1.6"/>
+
+  <!-- Crane arm -->
+  <g class="crane-arm">
+    <!-- Main boom -->
+    <polygon points="116,28 113,28 72,4 75,4"
+             fill="url(#fillBed)" stroke="url(#lgV)" stroke-width="1.6" stroke-linejoin="round"/>
+    <!-- Counter jib -->
+    <polygon points="116,28 116,25 134,18 134,21"
+             fill="url(#fillBed)" stroke="url(#lg)" stroke-width="1.6" stroke-linejoin="round"/>
+    <!-- Counter weight -->
+    <rect x="131" y="16" width="10" height="7" rx="1.5"
+          fill="url(#fillCab)" stroke="#e83e8c" stroke-width="1.5"/>
+    <!-- Tie wire -->
+    <line x1="73" y1="4" x2="136" y2="17" stroke="url(#lg)" stroke-width="0.8" stroke-dasharray="3 2.5" opacity="0.45"/>
+    <!-- Hook cable -->
+    <line x1="82" y1="9" x2="82" y2="30" stroke="url(#lgV)" stroke-width="1.2" stroke-linecap="round"/>
+    <!-- Hook -->
+    <path d="M80 30 Q77 36 80.5 38 Q86 40 86 34"
+          fill="none" stroke="#e83e8c" stroke-width="1.8" stroke-linecap="round"/>
+    <circle cx="80.5" cy="38" r="1.6" fill="#e83e8c"/>
+  </g>
+
+  <!-- Cab body -->
+  <path d="M143 52 L143 26 L157 14 L188 14 L188 52"
+        fill="url(#fillCab)" stroke="url(#lg)" stroke-width="1.8"
+        stroke-linejoin="round" stroke-linecap="round"/>
+  <!-- Cab roof bar -->
+  <line x1="157" y1="14" x2="188" y2="14" stroke="url(#lg)" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Windscreen -->
+  <path d="M149 26 L160 15 L186 15 L186 26 Z"
+        fill="rgba(178,235,242,0.18)" stroke="url(#lg)" stroke-width="1.3" stroke-linejoin="round"/>
+  <!-- Glare -->
+  <line x1="163" y1="15" x2="153" y2="26" stroke="white" stroke-width="1" opacity="0.28" stroke-linecap="round"/>
+
+  <!-- Door -->
+  <rect x="150" y="31" width="20" height="14" rx="2"
+        fill="url(#fillCab)" stroke="url(#lg)" stroke-width="1.3"/>
+  <!-- Handle -->
+  <line x1="164" y1="37" x2="170" y2="37" stroke="url(#lg)" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- Mirror -->
+  <line x1="188" y1="23" x2="194" y2="21" stroke="url(#lg)" stroke-width="1.2" stroke-linecap="round"/>
+  <ellipse cx="196" cy="20" rx="3.5" ry="2.5"
+           fill="rgba(178,235,242,0.2)" stroke="url(#lg)" stroke-width="1.2"/>
+
+  <!-- Headlight -->
+  <rect x="186" y="33" width="8" height="6" rx="2"
+        fill="rgba(255,238,58,0.2)" stroke="#e83e8c" stroke-width="1.5"/>
+
+  <!-- Tail light -->
+  <rect x="8" y="34" width="4" height="6" rx="1.5"
+        fill="rgba(232,62,140,0.2)" stroke="#e83e8c" stroke-width="1.3"/>
+
+  <!-- Exhaust -->
+  <rect x="182" y="4" width="5" height="12" rx="2.5"
+        fill="url(#fillCab)" stroke="url(#lgV)" stroke-width="1.5"/>
+  <circle cx="184" cy="3" r="2.5" fill="none" stroke="#00bcd4" stroke-width="1.2" opacity="0.45">
+    <animate attributeName="r"       values="1.5;5;1.5"   dur="1.3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.5;0;0.5"   dur="1.3s" repeatCount="indefinite"/>
+    <animate attributeName="cy"      values="3;-3;3"       dur="1.3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="183" cy="-1" r="1.5" fill="none" stroke="#e83e8c" stroke-width="1" opacity="0.35">
+    <animate attributeName="r"       values="1;3.5;1"     dur="1.8s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.35;0;0.35" dur="1.8s" repeatCount="indefinite"/>
+    <animate attributeName="cy"      values="-1;-6;-1"    dur="1.8s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Outriggers -->
+  <line x1="24"  y1="53" x2="18"  y2="62" stroke="url(#lgV)" stroke-width="1.8" stroke-linecap="round"/>
+  <rect x="12"   y="60"  width="14" height="4" rx="1.5"
+        fill="url(#fillBed)" stroke="url(#lg)" stroke-width="1.5"/>
+  <line x1="126" y1="53" x2="132" y2="62" stroke="url(#lgV)" stroke-width="1.8" stroke-linecap="round"/>
+  <rect x="128"  y="60"  width="14" height="4" rx="1.5"
+        fill="url(#fillBed)" stroke="url(#lg)" stroke-width="1.5"/>
+
+  <!-- Rear wheel 1 -->
+  <circle cx="38"  cy="58" r="11" fill="url(#fillW)" stroke="url(#lg)" stroke-width="1.8"/>
+  <circle cx="38"  cy="58" r="5.5" fill="url(#fillBed)" stroke="url(#lg)" stroke-width="1.4"/>
+  <circle cx="38"  cy="58" r="2"  fill="#00bcd4"/>
+  <line x1="38" y1="47" x2="38" y2="52"  stroke="url(#lg)" stroke-width="1.3" stroke-linecap="round"/>
+  <line x1="38" y1="64" x2="38" y2="69"  stroke="url(#lg)" stroke-width="1.3" stroke-linecap="round"/>
+  <line x1="27" y1="58" x2="32" y2="58"  stroke="url(#lg)" stroke-width="1.3" stroke-linecap="round"/>
+  <line x1="44" y1="58" x2="49" y2="58"  stroke="url(#lg)" stroke-width="1.3" stroke-linecap="round"/>
+  <line x1="30" y1="50" x2="34" y2="54"  stroke="url(#lg)" stroke-width="1"   stroke-linecap="round" opacity="0.5"/>
+  <line x1="42" y1="54" x2="46" y2="50"  stroke="url(#lg)" stroke-width="1"   stroke-linecap="round" opacity="0.5"/>
+  <line x1="30" y1="66" x2="34" y2="62"  stroke="url(#lg)" stroke-width="1"   stroke-linecap="round" opacity="0.5"/>
+  <line x1="42" y1="62" x2="46" y2="66"  stroke="url(#lg)" stroke-width="1"   stroke-linecap="round" opacity="0.5"/>
+
+  <!-- Rear wheel 2 -->
+  <circle cx="72"  cy="58" r="11" fill="url(#fillW)" stroke="url(#lg)" stroke-width="1.8"/>
+  <circle cx="72"  cy="58" r="5.5" fill="url(#fillBed)" stroke="url(#lg)" stroke-width="1.4"/>
+  <circle cx="72"  cy="58" r="2"  fill="#7ecfd6"/>
+  <line x1="72" y1="47" x2="72" y2="52"  stroke="url(#lg)" stroke-width="1.3" stroke-linecap="round"/>
+  <line x1="72" y1="64" x2="72" y2="69"  stroke="url(#lg)" stroke-width="1.3" stroke-linecap="round"/>
+  <line x1="61" y1="58" x2="66" y2="58"  stroke="url(#lg)" stroke-width="1.3" stroke-linecap="round"/>
+  <line x1="78" y1="58" x2="83" y2="58"  stroke="url(#lg)" stroke-width="1.3" stroke-linecap="round"/>
+  <line x1="64" y1="50" x2="68" y2="54"  stroke="url(#lg)" stroke-width="1"   stroke-linecap="round" opacity="0.5"/>
+  <line x1="76" y1="54" x2="80" y2="50"  stroke="url(#lg)" stroke-width="1"   stroke-linecap="round" opacity="0.5"/>
+  <line x1="64" y1="66" x2="68" y2="62"  stroke="url(#lg)" stroke-width="1"   stroke-linecap="round" opacity="0.5"/>
+  <line x1="76" y1="62" x2="80" y2="66"  stroke="url(#lg)" stroke-width="1"   stroke-linecap="round" opacity="0.5"/>
+
+  <!-- Front wheel -->
+  <circle cx="166" cy="58" r="11" fill="url(#fillW)" stroke="url(#lg)" stroke-width="1.8"/>
+  <circle cx="166" cy="58" r="5.5" fill="url(#fillBed)" stroke="url(#lg)" stroke-width="1.4"/>
+  <circle cx="166" cy="58" r="2"  fill="#e83e8c"/>
+  <line x1="166" y1="47" x2="166" y2="52"  stroke="url(#lg)" stroke-width="1.3" stroke-linecap="round"/>
+  <line x1="166" y1="64" x2="166" y2="69"  stroke="url(#lg)" stroke-width="1.3" stroke-linecap="round"/>
+  <line x1="155" y1="58" x2="160" y2="58"  stroke="url(#lg)" stroke-width="1.3" stroke-linecap="round"/>
+  <line x1="172" y1="58" x2="177" y2="58"  stroke="url(#lg)" stroke-width="1.3" stroke-linecap="round"/>
+  <line x1="158" y1="50" x2="162" y2="54"  stroke="url(#lg)" stroke-width="1"   stroke-linecap="round" opacity="0.5"/>
+  <line x1="170" y1="54" x2="174" y2="50"  stroke="url(#lg)" stroke-width="1"   stroke-linecap="round" opacity="0.5"/>
+  <line x1="158" y1="66" x2="162" y2="62"  stroke="url(#lg)" stroke-width="1"   stroke-linecap="round" opacity="0.5"/>
+  <line x1="170" y1="62" x2="174" y2="66"  stroke="url(#lg)" stroke-width="1"   stroke-linecap="round" opacity="0.5"/>
+
+</svg>
+</div>
+
+<!-- Page content -->
+<div class="container">
+    <img src="Final_Logo-01-01-1080x1080.png" class="logo" alt="Click Click">
+    <div class="accent-bar"></div>
+    <h1>Coming Soon</h1>
+    <p>Our website is currently being refreshed. <br>Our operations continue smoothly as usual while we support our clients.</p>
+    <p class="contact">Any enquiries? Contact us at <a href="mailto:info@clickclick.video">info@clickclick.video</a></p>
+</div>
+
 </body>
 </html>
