@@ -13,93 +13,98 @@
   const RESPONSES = [
     {
       keys: ['hello', 'hi ', 'hey', 'hiya', 'howdy', 'morning', 'afternoon', 'evening'],
-      reply: "Hey! 👋 Great to have you here. I can tell you about our services, pricing or help you book a call. What are you looking for?",
+      reply: "Welcome to ClickClick! 👋 We're a Belfast-based video marketing agency specialising in live commerce, cinematic production and bespoke digital solutions. How can we help you today?",
     },
     {
-      keys: ['tiktok live', 'live sell', 'live shopping', 'tiktok shop'],
-      reply: "TikTok Shop and live selling is one of our biggest specialities! We handle everything — strategy, scripting, production and going live. Want to book a call to chat it through? 📱",
+      keys: ['live commerce', 'live stream', 'live selling', 'live video', 'tiktok live', 'live shop'],
+      reply: "Live commerce is at the heart of what we do. We produce and manage end-to-end live shopping experiences — from pre-show strategy and presenter coaching through to full broadcast production and post-stream performance analysis. It's one of the most powerful revenue channels available to brands right now. Shall we book a call to explore what this looks like for you?",
       book: true,
     },
     {
-      keys: ['tiktok', 'reels', 'short form', 'shorts', 'social video', 'instagram video'],
-      reply: "We love short-form! We create scroll-stopping content for TikTok, Reels and YouTube Shorts — all built to sell, not just look pretty. Want to see how it could work for your brand?",
+      keys: ['tiktok shop', 'tiktok'],
+      reply: "As an official TikTok Partner, we offer brands a distinct advantage on the platform — from TikTok Shop setup and live commerce production to creator strategy and performance content. We understand TikTok at a level most agencies simply don't. Would you like to discuss how we can elevate your presence on the platform?",
       book: true,
     },
     {
-      keys: ['social commerce', 'sell on social', 'shoppable'],
-      reply: "Social commerce is a big focus for us — turning video into actual sales on TikTok Shop, Instagram and beyond. It's the fastest growing area in retail right now. Want to explore what that looks like for you?",
+      keys: ['reels', 'instagram', 'social video', 'social content', 'social media video'],
+      reply: "We produce high-impact social video content engineered for discovery and conversion across Instagram, TikTok, YouTube and beyond. Every piece of content we create is purposefully crafted to perform — not just to look impressive. Want to explore a content strategy for your brand?",
       book: true,
     },
     {
-      keys: ['ai commerce', 'chatgpt', 'gemini', 'ai search', 'ai shopping', 'appear in ai'],
-      reply: "This is cutting-edge stuff! We help brands get their products appearing inside AI tools like ChatGPT and Google Gemini — so when someone asks AI for a recommendation, your brand shows up. Very few agencies in the UK offer this yet. 🚀",
+      keys: ['social commerce', 'sell on social', 'shoppable', 'commerce'],
+      reply: "Social commerce is transforming the way consumers discover and purchase products. We help brands build fully integrated social commerce strategies — combining compelling video content, live shopping experiences and platform-native selling tools to drive measurable revenue. Would you like to find out more?",
       book: true,
     },
     {
-      keys: ['tv', 'television', 'broadcast', 'tv ad', 'commercial', 'itv', 'channel 4', 'streaming ad'],
-      reply: "Yes, we do TV and connected TV advertising — traditional broadcast, ITV X, Channel 4 streaming and YouTube. A brilliant way to build brand trust. Want to talk through what's possible?",
+      keys: ['ai commerce', 'chatgpt', 'gemini', 'ai search', 'ai shopping', 'appear in ai', 'ai discovery'],
+      reply: "We specialise in AI Commerce — ensuring your brand and products are discoverable within AI-powered platforms such as ChatGPT and Google Gemini. As consumers increasingly turn to AI for purchasing decisions, this is becoming an essential component of any digital strategy. Very few agencies in the UK offer this capability. Shall we talk through what this means for your brand?",
       book: true,
     },
     {
-      keys: ['brand film', 'brand video', 'company video', 'about us video', 'corporate video'],
-      reply: "Brand films are one of our favourites — cinematic storytelling that captures who you really are. Book a call and we can show you some examples!",
+      keys: ['tv', 'television', 'broadcast', 'tv ad', 'commercial', 'itv', 'channel 4', 'streaming ad', 'connected tv', 'ctv'],
+      reply: "We produce broadcast-quality television commercials and connected TV campaigns for platforms including ITV X, Channel 4 and YouTube. Our productions are crafted to the same standard as the biggest campaigns on screen — delivered with the agility and personal attention of a specialist agency. Would you like to discuss a broadcast project?",
       book: true,
     },
     {
-      keys: ['course', 'learn', 'training', 'workshop', 'teach', 'how to'],
-      reply: "We run courses and workshops on video marketing, social commerce and AI tools — great for brand teams who want to upskill. Drop us a message and we'll let you know what's coming up! 🎓",
+      keys: ['cinematic', 'brand film', 'brand video', 'company video', 'corporate video', 'production', 'film', 'video production'],
+      reply: "Cinematic video production is one of our core strengths. We create visually stunning brand films that communicate your brand's identity with precision and emotional depth — from concept development and location scouting through to post-production and colour grading. Would you like to see examples of our work?",
       book: true,
     },
     {
-      keys: ['custom tool', 'ai tool', 'coding', 'bespoke', 'build me', 'app'],
-      reply: "We build custom digital tools for brands — branded AI assistants, content generators, TikTok script builders and more. Things that feel uniquely yours. Want to tell us what you're imagining?",
+      keys: ['bespoke', 'custom', 'personalised', 'programming', 'coded', 'coding', 'software', 'build', 'tool', 'app', 'api', 'integration', 'platform'],
+      reply: "We develop bespoke digital solutions and personalised programming tailored specifically to each client's requirements — from custom AI-powered tools and branded content platforms to API integrations that connect your product catalogue to AI shopping ecosystems. If you can imagine it, we can build it. What are you looking to create?",
       book: true,
     },
     {
-      keys: ['oliver bonas', 'loccitane', 'occitane', 'brands you', 'clients', 'who have you worked', 'portfolio', 'case study'],
-      reply: "We've worked with some brilliant names including Oliver Bonas and L'Occitane, and our founder judges for major marketing awards. Head to our Work section to see case studies!",
+      keys: ['course', 'learn', 'training', 'workshop', 'masterclass', 'teach', 'education', 'academy'],
+      reply: "Our Academy offers professional training in video marketing, live commerce and AI strategy — designed for brand teams, marketing professionals and entrepreneurs who want to stay ahead of the curve. Sessions are available as group workshops or private masterclasses. Want to find out what's currently available?",
       book: true,
     },
     {
-      keys: ['award', 'judge', 'gua', 'nominated'],
-      reply: "We've been nominated for multiple industry awards and our founder judges for the GUA Awards — so we know what great video marketing looks like from both sides! 🏆",
-    },
-    {
-      keys: ['belfast', 'northern ireland', 'ni ', 'glandore', 'local', 'based'],
-      reply: "We're based in Belfast at Glandore — one of the best co-working spaces in the city. We work with brands across Northern Ireland, Ireland and the UK. Belfast businesses, we'd especially love to chat! 🇬🇧",
+      keys: ['oliver bonas', 'loccitane', 'occitane', 'clients', 'who have you worked', 'portfolio', 'case study', 'experience', 'brands'],
+      reply: "Our client portfolio includes prestigious brands such as Oliver Bonas and L'Occitane, alongside ambitious businesses across retail, lifestyle and consumer sectors. Our founder also serves as a judge for major industry awards, bringing strategic insight that goes well beyond typical agency experience. We'd be delighted to share relevant case studies — shall we arrange a call?",
       book: true,
     },
     {
-      keys: ['price', 'cost', 'how much', 'budget', 'rates', 'fees', 'quote', 'affordable', 'expensive', 'cheap'],
-      reply: "Pricing varies by project — a social content package looks very different to a TV ad! Best thing is to book a free discovery call and we'll give you an honest quote that fits your goals and budget. 💬",
+      keys: ['award', 'judge', 'gua', 'nominated', 'recognition'],
+      reply: "ClickClick has received multiple industry award nominations and our founder holds a position as a judge for the GUA Awards. We don't just understand great video marketing — we help define the standard for it. 🏆",
+    },
+    {
+      keys: ['belfast', 'northern ireland', 'ni ', 'glandore', 'local', 'based', 'ireland', 'uk'],
+      reply: "We're proudly based in Belfast, operating from Glandore — one of the city's premier professional workspaces. We work with brands across Northern Ireland, the Republic of Ireland and the wider UK, bringing a globally-informed perspective with genuine regional expertise. 🇬🇧",
       book: true,
     },
     {
-      keys: ['book', 'call', 'meeting', 'chat', 'speak', 'talk', 'appointment', 'schedule', 'consultation'],
-      reply: "Brilliant — let's get something in the diary! Hit the button below to pick a time. Relaxed chat, no hard sell. 📅",
+      keys: ['price', 'cost', 'how much', 'budget', 'rates', 'fees', 'quote', 'investment', 'package'],
+      reply: "Our fees are tailored to each project — a live commerce campaign requires a very different investment to a cinematic brand film. We'd recommend a complimentary discovery call where we can understand your objectives and provide a transparent, detailed proposal. Shall we get something booked?",
+      book: true,
+    },
+    {
+      keys: ['book', 'call', 'meeting', 'speak', 'talk', 'appointment', 'schedule', 'consultation', 'discovery'],
+      reply: "We'd love to connect. Book a complimentary discovery call using the button below and let's explore what we can create together. No obligation — just a genuine conversation about your brand and goals. 📅",
       book: true,
     },
     {
       keys: ['contact', 'email', 'reach', 'get in touch', 'message'],
-      reply: "Best way to reach us is hello@clickclick.video — or book a call directly using the button below and we'll be back to you within 24 hours!",
+      reply: "You can reach us directly at info@clickclick.video — or book a discovery call below and we'll be in touch within 24 hours.",
       book: true,
     },
     {
-      keys: ['what do you do', 'what is clickclick', 'who are you', 'your services', 'services', 'what can you'],
-      reply: "ClickClick is a Belfast video marketing agency. We specialise in Social Commerce (TikTok Shop, live selling), AI Commerce (appearing in ChatGPT/Gemini), Video Production (TV, brand films), Custom AI Tools, and Learning (courses & workshops). What area interests you most?",
+      keys: ['what do you do', 'what is clickclick', 'who are you', 'your services', 'services', 'what can you', 'specialise', 'specialize'],
+      reply: "ClickClick is a Belfast-based video marketing agency specialising in Live Commerce, Cinematic Video Production, Social Commerce Strategy, AI Commerce and Bespoke Digital Programming. As an official TikTok Partner, we combine creative excellence with cutting-edge technology to help brands show up powerfully — and sell effectively. What area would you like to explore?",
     },
     {
-      keys: ['thank', 'thanks', 'cheers', 'great', 'brilliant', 'perfect', 'awesome', 'helpful'],
-      reply: "You're so welcome! Anything else I can help with — or ready to book that call? 😊",
+      keys: ['thank', 'thanks', 'cheers', 'great', 'brilliant', 'perfect', 'awesome', 'helpful', 'wonderful'],
+      reply: "It's a pleasure — that's what we're here for! Is there anything else I can help with, or shall we get a discovery call in the diary? 😊",
       book: true,
     },
     {
-      keys: ['bye', 'goodbye', 'see you', 'later'],
-      reply: "Thanks for stopping by! Come back any time — and if you ever want to chat video marketing, you know where we are. 👋",
+      keys: ['bye', 'goodbye', 'see you', 'later', 'take care'],
+      reply: "Thank you for visiting ClickClick. We hope to speak with you soon — don't hesitate to get in touch whenever you're ready. 👋",
     },
     {
-      keys: ['human', 'real person', 'agent', 'speak to someone', 'actual person'],
-      reply: "I'm a chatbot — but a real human at ClickClick would love to chat! Email hello@clickclick.video or book a discovery call below. We're pretty quick at getting back 😊",
+      keys: ['human', 'real person', 'agent', 'speak to someone', 'actual person', 'member of staff'],
+      reply: "I'm a virtual assistant — but our team would love to speak with you directly. You can email us at info@clickclick.video or book a discovery call below and we'll be back to you promptly. 😊",
       book: true,
     },
   ];
@@ -107,7 +112,7 @@
   const FALLBACKS = [
     "Great question! That's probably best answered on a call — we can really dig into the detail there. Want to book one? 📅",
     "Hmm, not sure I caught that! Try asking about our services, pricing, or how to get started — or just book a call and chat directly with the team.",
-    "I want to make sure you get the right answer — drop us an email at hello@clickclick.video or book a call and we'll sort you out!",
+    "I want to make sure you get the right answer — drop us an email at info@clickclick.video or book a call and we'll sort you out!",
   ];
   let fallbackIndex = 0;
 
