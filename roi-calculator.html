@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROI Calculator | Click Click</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FDF5E6;
+            --dark: #1a1a1a;
+            --mid: #555;
+            --light: #888;
+            --turquoise: #00bcd4;
+            --pink: #e83e8c;
+            --gradient: linear-gradient(to right, #00bcd4, #e83e8c);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--cream);
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 60px;
+            background: rgba(253,245,230,0.92);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            transition: padding 0.3s;
+        }
+        nav.scrolled { padding: 14px 60px; }
+        .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .nav-logo-accent { display: flex; flex-direction: column; gap: 4px; }
+        .nav-logo-accent span { display: block; height: 2px; width: 20px; border-radius: 2px; }
+        .nav-logo-accent span:nth-child(1) { background: var(--turquoise); }
+        .nav-logo-accent span:nth-child(2) { background: var(--pink); }
+        .nav-logo-text { font-family: 'DM Serif Display', serif; font-size: 1.4rem; letter-spacing: -1px; color: var(--dark); }
+        .nav-logo-text span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+        .nav-links a {
+            text-decoration: none; font-weight: 400; font-size: 0.88rem;
+            letter-spacing: 0.5px; color: var(--mid); transition: color 0.2s; text-transform: uppercase;
+        }
+        .nav-links a:hover { color: var(--dark); }
+        .nav-cta {
+            background: var(--dark); color: var(--cream) !important; padding: 10px 24px;
+            border-radius: 100px; font-weight: 600 !important; transition: opacity 0.2s !important;
+        }
+        .nav-cta:hover { opacity: 0.8; }
+
+        /* ── PAGE HERO ── */
+        #page-hero { padding: 150px 60px 50px; position: relative; overflow: hidden; text-align: center; }
+        .hero-bg-blob { position: absolute; width: 500px; height: 500px; border-radius: 50%; filter: blur(120px); opacity: 0.15; pointer-events: none; }
+        .blob-1 { background: #00bcd4; top: -80px; right: 60px; }
+        .blob-2 { background: #e83e8c; bottom: -60px; left: -60px; }
+        .page-hero-inner { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+        .page-hero-title {
+            font-family: 'DM Serif Display', serif; font-size: clamp(2.4rem, 6vw, 3.8rem);
+            line-height: 1.1; letter-spacing: -2px; margin-bottom: 18px;
+            opacity: 0; animation: fadeUp 0.9s 0.2s forwards;
+        }
+        .page-hero-title em {
+            font-style: italic; background: var(--gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .page-hero-sub {
+            font-size: 1.1rem; font-weight: 300; color: var(--mid);
+            line-height: 1.7; max-width: 540px; margin: 0 auto;
+            opacity: 0; animation: fadeUp 0.9s 0.4s forwards;
+        }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ── CALCULATOR ── */
+        #calculator { padding: 30px 60px 100px; }
+        .calc-shell { max-width: 880px; margin: 0 auto; }
+
+        /* Slider input */
+        .slider-card {
+            background: #fff;
+            border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 16px;
+            padding: 32px 40px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .slider-card label {
+            display: block;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--mid);
+            margin-bottom: 16px;
+        }
+        .slider-value {
+            font-family: 'DM Serif Display', serif;
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        input[type="range"] {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 100px;
+            background: rgba(0,0,0,0.08);
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            background: var(--gradient);
+            cursor: pointer;
+            border: 4px solid #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            background: var(--gradient);
+            cursor: pointer;
+            border: 4px solid #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .slider-labels {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            font-size: 0.8rem; color: var(--light); margin-top: 10px; gap: 8px;
+        }
+        .slider-labels span:nth-child(2) {
+            text-align: center; flex: 1;
+        }
+
+        /* Versus layout */
+        .versus-wrap {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 24px;
+            align-items: stretch;
+            margin-bottom: 28px;
+        }
+        .vs-circle {
+            align-self: center;
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            background: var(--dark);
+            color: var(--cream);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'DM Serif Display', serif;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .option-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+        }
+        .option-card.ads { border: 2px solid rgba(0,188,212,0.25); }
+        .option-card.gift { border: 2px solid rgba(232,62,140,0.25); }
+
+        .option-icon {
+            width: 64px; height: 64px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem;
+            margin: 0 auto 16px;
+        }
+        .option-card.ads .option-icon { background: rgba(0,188,212,0.1); }
+        .option-card.gift .option-icon { background: rgba(232,62,140,0.1); }
+
+        .option-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.6rem;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+        .option-subtitle {
+            font-size: 0.9rem;
+            font-weight: 300;
+            color: var(--mid);
+            margin-bottom: 28px;
+        }
+
+        .big-stat { margin-bottom: 22px; }
+        .big-stat-number {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.6rem;
+            line-height: 1;
+        }
+        .big-stat-label {
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--mid);
+            font-weight: 600;
+            margin-top: 6px;
+        }
+
+        .roi-box {
+            border-radius: 12px;
+            padding: 18px;
+            margin-top: 24px;
+        }
+        .option-card.ads .roi-box { background: rgba(0,188,212,0.06); }
+        .option-card.gift .roi-box { background: rgba(232,62,140,0.06); }
+        .roi-box-label {
+            font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase;
+            color: var(--mid); font-weight: 600; margin-bottom: 6px;
+        }
+        .roi-box-value {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.4rem;
+        }
+        .option-card.ads .roi-box-value { color: var(--turquoise); }
+        .option-card.gift .roi-box-value { color: var(--pink); }
+        .roi-box-sub {
+            font-size: 0.8rem; font-weight: 300; color: var(--mid); margin-top: 4px;
+        }
+
+        /* Winner banner */
+        .winner-banner {
+            background: var(--dark);
+            color: var(--cream);
+            border-radius: 16px;
+            padding: 32px 40px;
+            text-align: center;
+            font-size: 1.15rem;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+        .winner-banner strong {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .industry-line {
+            text-align: center;
+            font-size: 0.88rem;
+            font-weight: 300;
+            color: var(--mid);
+            line-height: 1.7;
+            max-width: 640px;
+            margin: 0 auto 28px;
+        }
+        .industry-line strong { font-weight: 600; color: var(--dark); }
+        .note {
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: 300;
+            color: var(--light);
+            margin-top: 24px;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ── WHY SECTION ── */
+        .why-section {
+            margin-top: 80px;
+            text-align: center;
+        }
+        .why-section .section-label { margin-bottom: 12px; }
+        .why-section .section-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            line-height: 1.15;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+        .why-section .section-sub {
+            font-weight: 300; color: var(--mid); font-size: 1rem; line-height: 1.7;
+            max-width: 540px; margin: 0 auto 40px;
+        }
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .why-card {
+            background: #fff;
+            border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 14px;
+            padding: 24px 18px;
+        }
+        .why-number {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.2rem;
+            line-height: 1;
+            margin-bottom: 10px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .why-text {
+            font-size: 0.85rem;
+            font-weight: 300;
+            color: var(--mid);
+            line-height: 1.6;
+        }
+        .why-footnote {
+            font-size: 0.92rem;
+            font-weight: 300;
+            color: var(--mid);
+            line-height: 1.7;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+        @media (max-width: 900px) {
+            .why-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 600px) {
+            .why-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ── CTA ── */
+        #cta { background: var(--cream); padding: 60px 60px 120px; text-align: center; }
+        .cta-inner { max-width: 600px; margin: 0 auto; }
+        .section-label { font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase; color: var(--light); margin-bottom: 12px; }
+        .section-title { font-family: 'DM Serif Display', serif; font-size: clamp(2rem, 4.5vw, 3rem); line-height: 1.1; letter-spacing: -1px; margin-bottom: 20px; }
+        .section-sub { font-weight: 300; color: var(--mid); font-size: 1.05rem; line-height: 1.7; margin: 0 auto 40px; text-align: center; max-width: 440px; }
+        .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .btn-primary { background: var(--dark); color: var(--cream); padding: 16px 36px; border-radius: 100px; font-size: 0.9rem; font-weight: 600; text-decoration: none; letter-spacing: 0.3px; transition: transform 0.2s, opacity 0.2s; }
+        .btn-primary:hover { transform: translateY(-2px); opacity: 0.85; }
+        .btn-outline { border: 1.5px solid var(--dark); color: var(--dark); padding: 16px 36px; border-radius: 100px; font-size: 0.9rem; font-weight: 600; text-decoration: none; letter-spacing: 0.3px; transition: background 0.2s, color 0.2s, transform 0.2s; }
+        .btn-outline:hover { background: var(--dark); color: var(--cream); transform: translateY(-2px); }
+
+        /* ── FOOTER ── */
+        footer { background: var(--dark); color: var(--cream); padding: 40px 60px; text-align: center; }
+        .footer-copy { font-weight: 300; font-size: 0.82rem; color: rgba(253,245,230,0.35); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            nav { padding: 18px 24px; }
+            .nav-links { display: none; }
+            #page-hero, #calculator, #cta { padding-left: 24px; padding-right: 24px; }
+            .versus-wrap { grid-template-columns: 1fr; }
+            .vs-circle { margin: 0 auto; transform: rotate(90deg); }
+            .slider-card { padding: 24px; }
+            footer { padding: 32px 24px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+    <a href="home.html" class="nav-logo">
+        <div class="nav-logo-text">Click<span>Click</span></div>
+        <div class="nav-logo-accent">
+            <span></span>
+            <span></span>
+        </div>
+    </a>
+    <ul class="nav-links">
+        <li><a href="home.html">Home</a></li>
+        <li><a href="services-video.html">Services</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="home.html#contact" class="nav-cta">Let's Talk</a></li>
+    </ul>
+</nav>
+
+<!-- PAGE HERO -->
+<section id="page-hero">
+    <div class="hero-bg-blob blob-1"></div>
+    <div class="hero-bg-blob blob-2"></div>
+    <div class="page-hero-inner">
+        <h1 class="page-hero-title">Stop paying for ads.<br><em>Start gifting.</em></h1>
+        <p class="page-hero-sub">£1,000 on ads, or a free gift to a local creator &mdash; a make-up application, a blow-dry, a cocktail, an overnight stay. See which makes more cash.</p>
+    </div>
+</section>
+
+<!-- CALCULATOR -->
+<section id="calculator">
+    <div class="calc-shell">
+
+        <!-- Slider: gift cost -->
+        <div class="slider-card">
+            <label>How much does your free gift cost?</label>
+            <div class="slider-value" id="giftCostDisplay">£8</div>
+            <input type="range" id="giftCost" min="2" max="30" value="8" step="1">
+            <div class="slider-labels">
+                <span>£2</span>
+                <span>e.g. make-up, blow-dry, cocktail, room</span>
+                <span>£30</span>
+            </div>
+        </div>
+
+        <!-- Slider: number of content creators -->
+        <div class="slider-card">
+            <label>How many local creators could you gift each month?</label>
+            <div class="slider-value" id="numInfDisplay">10</div>
+            <input type="range" id="numInf" min="1" max="40" value="10" step="1">
+            <div class="slider-labels">
+                <span>1</span>
+                <span>content creators</span>
+                <span>40</span>
+            </div>
+        </div>
+
+        <!-- Slider: average sale value -->
+        <div class="slider-card">
+            <label>How much is an average sale worth?</label>
+            <div class="slider-value" id="aovDisplay">£40</div>
+            <input type="range" id="aov" min="5" max="200" value="40" step="5">
+            <div class="slider-labels">
+                <span>£5</span>
+                <span>per customer</span>
+                <span>£200</span>
+            </div>
+        </div>
+
+        <p class="industry-line">Every local content creator we work with posts a video. For everyday treats, that often brings in several new customers &mdash; for big-ticket items like a hotel stay, it's more about one or two high-value bookings. Either way, paid ads cost more per sale the higher the price tag.</p>
+
+        <!-- Versus comparison -->
+        <div class="versus-wrap">
+
+            <div class="option-card gift">
+                <div class="option-icon">&#127873;</div>
+                <h3 class="option-title">Free gifting</h3>
+                <p class="option-subtitle" id="gift-cost-subtitle">&mdash;</p>
+
+                <div class="big-stat">
+                    <div class="big-stat-number" id="gift-sales">&mdash;</div>
+                    <div class="big-stat-label">New sales</div>
+                </div>
+
+                <div class="roi-box">
+                    <div class="roi-box-label">Cash made this month</div>
+                    <div class="roi-box-value" id="gift-return">&mdash;</div>
+                    <div class="roi-box-sub" id="gift-cost">&mdash;</div>
+                </div>
+            </div>
+
+            <div class="vs-circle">VS</div>
+
+            <div class="option-card ads">
+                <div class="option-icon">&#128226;</div>
+                <h3 class="option-title">Paid ads</h3>
+                <p class="option-subtitle">What most brands do now &mdash; £1,000 every month</p>
+
+                <div class="big-stat">
+                    <div class="big-stat-number" id="ad-sales">&mdash;</div>
+                    <div class="big-stat-label">New sales</div>
+                </div>
+
+                <div class="roi-box">
+                    <div class="roi-box-label">Cash made this month</div>
+                    <div class="roi-box-value" id="ad-return">&mdash;</div>
+                    <div class="roi-box-sub" id="ad-cost">&mdash;</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="winner-banner" id="summary"></div>
+
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p class="footer-copy">&#169; 2025 Clickclick Video Marketing LTD. All rights reserved.</p>
+</footer>
+
+<script>
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    function fmtGBP(n){ return '£' + Math.round(n).toLocaleString(); }
+
+    const AD_BUDGET = 1000;       // fixed monthly ad spend
+    const AD_COST_PER_SALE_LOW = 20;   // impulse buys (under £20)
+    const AD_COST_PER_SALE_MID = 30;   // everyday purchases (£20-£70)
+    const AD_COST_PER_SALE_HIGH = 80;  // considered purchases (£70+)
+
+    const SALES_PER_POST_LOW = 6;   // impulse buys — coffee, pastry, small treats
+    const SALES_PER_POST_MID = 4;   // everyday treats — blow-dry, cocktail, lunch
+    const SALES_PER_POST_HIGH = 1;  // considered purchases — hotel stays, big-ticket services
+
+    function getTier(aov){
+        if (aov < 20) return 'low';
+        if (aov <= 70) return 'mid';
+        return 'high';
+    }
+
+    function calc(){
+        const giftCost = parseFloat(document.getElementById('giftCost').value);
+        const numInf = parseFloat(document.getElementById('numInf').value);
+        const aov = parseFloat(document.getElementById('aov').value);
+
+        document.getElementById('giftCostDisplay').textContent = fmtGBP(giftCost);
+        document.getElementById('numInfDisplay').textContent = numInf;
+        document.getElementById('aovDisplay').textContent = fmtGBP(aov);
+
+        const tier = getTier(aov);
+        const adCostPerSale = tier === 'low' ? AD_COST_PER_SALE_LOW : tier === 'mid' ? AD_COST_PER_SALE_MID : AD_COST_PER_SALE_HIGH;
+        const salesPerPost = tier === 'low' ? SALES_PER_POST_LOW : tier === 'mid' ? SALES_PER_POST_MID : SALES_PER_POST_HIGH;
+
+        // Paid ads
+        const adSales = AD_BUDGET / adCostPerSale;
+        const adRevenue = adSales * aov;
+        const adCash = adRevenue - AD_BUDGET;
+
+        document.getElementById('ad-sales').textContent = adSales.toFixed(0);
+        document.getElementById('ad-return').textContent = fmtGBP(adCash);
+        document.getElementById('ad-cost').textContent = 'Cost: ' + fmtGBP(AD_BUDGET);
+
+        // Gifting
+        const giftSpend = giftCost * numInf;
+        const giftSales = numInf * salesPerPost;
+        const giftRevenue = giftSales * aov;
+        const giftCash = giftRevenue - giftSpend;
+
+        document.getElementById('gift-cost-subtitle').textContent = numInf + ' gifts of ' + fmtGBP(giftCost) + ' = ' + fmtGBP(giftSpend) + ' total';
+        document.getElementById('gift-sales').textContent = giftSales.toFixed(0);
+        document.getElementById('gift-return').textContent = fmtGBP(giftCash);
+        document.getElementById('gift-cost').textContent = 'Cost: ' + fmtGBP(giftSpend);
+
+        // Summary
+        const diff = giftCash - adCash;
+        let summary = '';
+        if (diff >= 0) {
+            summary = '<strong>Gifting makes ' + fmtGBP(diff) + ' more</strong> this month &mdash; for a fraction of the cost.';
+        } else {
+            summary = '<strong>Gifting costs ' + fmtGBP(giftSpend) + '</strong> vs ' + fmtGBP(AD_BUDGET) + ' for ads &mdash; and still brings in good money.';
+        }
+        document.getElementById('summary').innerHTML = summary;
+    }
+
+    ['giftCost','numInf','aov'].forEach(id => {
+        document.getElementById(id).addEventListener('input', calc);
+    });
+    calc();
+</script>
+</body>
+</html>
